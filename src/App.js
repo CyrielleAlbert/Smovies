@@ -4,6 +4,8 @@ import Home from './Pages/Home.jsx'
 import MyBoards from './Pages/MyBoards.jsx'
 import Discovery from './Pages/Discovery.jsx'
 import Board from './Pages/Board.jsx'
+import Playground from "./Playground.jsx"
+
 class App extends Component{
   render() {
     return(
@@ -14,6 +16,7 @@ class App extends Component{
             <Route path="/MyBoards" component={MyBoards}/>
             <Route path="/Discovery" component={Discovery}/>
             <Route path="/Board/:id" component={Board} />
+            <Route path="/Playground" component = {Playground} />
 
           </Switch>
         </div>
