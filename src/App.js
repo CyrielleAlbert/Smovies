@@ -5,6 +5,7 @@ import MyBoards from './Pages/MyBoards.jsx'
 import Discovery from './Pages/Discovery.jsx'
 import Board from './Pages/Board.jsx'
 import Playground from "./Playground.jsx"
+import NotFound from "./Pages/404.jsx"
 
 class App extends Component{
   render() {
@@ -17,6 +18,7 @@ class App extends Component{
             <Route path="/Discovery" component={Discovery}/>
             <Route path="/Board/:id" component={Board} />
             <Route path="/Playground" component = {Playground} />
+            <Route component={NotFound} />
 
           </Switch>
         </div>
