@@ -18,13 +18,17 @@ class Discovery extends Component {
         <Header></Header>
         <div
           style={{
-            paddingTop: 250,
+            paddingTop: 100,
             color: '#4D4D4D',
-            fontSize: 60,
+            fontSize: 20,
             textAlign: 'center',
           }}
         >
-          Discovery is coming in the next update...
+          <div style={{flexDirection: "row", display:"flex",paddingTop:0,color:"white", fontSize: 30,}}>
+            <div style={{width:"33%"}}>Boards </div>
+            <div style={{width:"33%", fontWeight:"bold", letterSpacing:'0.2em'}}>Discover</div>
+            <div style={{width:"33%"}}>Search</div>
+          </div>
         </div>
       </div>
     )
