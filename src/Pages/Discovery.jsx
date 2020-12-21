@@ -1,13 +1,15 @@
 import React, { Component, useEffect } from 'react'
 import Header from './../reusable-components/Header.js'
-const axios = require("axios")
+import Board from './../reusable-components/Board.js'
 
+const axios = require('axios')
 
-const board1={
-  name:"Board1",
-  nStars:"15",
-  moviesLayout:["001","002","003","004"]
+const board1 = {
+  name: 'Top10',
+  nStars: 15,
+  moviesId: [11324, 3594, 629, 1933],
 }
+var posters = []
 
 class Discovery extends Component {
   constructor(props) {
@@ -18,25 +20,37 @@ class Discovery extends Component {
         colors: ['#D40000', '#525252'],
       },
       searchText: '',
+      loaded: false,
     }
   }
 
-  async componentDidMount(){
+  async componentDidMount() {
     try {
-      const movies = await axios.get("https://api.themoviedb.org/3/search/movie", {
+      await this.loadPoster()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  loadPoster = async () => {
+    board1.moviesId.forEach(async (movieId) => {
+      try {
+        const movies = await axios.get('https://api.themoviedb.org/3/movie/' + movieId, {
           params: {
-          api_key : process.env.REACT_APP_MOVIES_API_KEY,
-          language : 'en_US',
-          query: 'Harry', 
-          page: 1,
-          include_adult: false,
+            api_key: process.env.REACT_APP_MOVIES_API_KEY,
+            language: 'en_US',
           },
         })
-      console.log("movies:",movies.data.results)
-    }catch(error){
-      console.log(error)
-
-    }
+        posters.push('https://image.tmdb.org/t/p/original' + movies.data.poster_path)
+        if (posters.length == 4) {
+          this.setState({ loaded: true })
+          console.log(this.state.loaded)
+          console.log(posters)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    })
   }
 
   changeSearch = (event) => {
@@ -114,9 +128,18 @@ class Discovery extends Component {
               </div>
             </div>
             <div style={{ width: '33%', fontWeight: 'bold', letterSpacing: '0.2em' }}>Discover</div>
-            <div style={{ width: '33%', textAlign:"right",paddingRight:"5%" }}>
+            <div style={{ width: '33%', textAlign: 'right', paddingRight: '5%' }}>
               <input
-                style={{ width: '50%', backgroundColor: '#525252', color: 'white',fontFamily:"Poppins",borderWidth:0,borderRadius:24,outline:"none",padding:5 }}
+                style={{
+                  width: '50%',
+                  backgroundColor: '#525252',
+                  color: 'white',
+                  fontFamily: 'Poppins',
+                  borderWidth: 0,
+                  borderRadius: 24,
+                  outline: 'none',
+                  padding: 5,
+                }}
                 type="text"
                 placeholder="Search"
                 value={this.state.searchText}
@@ -125,8 +148,8 @@ class Discovery extends Component {
               />
             </div>
           </div>
-          <div></div>
         </div>
+        <Board name={board1.name} nStars={board1.nStars} movies={posters} style={{fontFamily: 'Poppins', fontSize:20}}></Board>
       </div>
     )
   }
