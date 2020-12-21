@@ -10,29 +10,31 @@ class Playground extends Component {
   componentDidMount() {}
   render() {
     return (
-      <div 
-          style={{
-            backgroundColor: '#414141',
-            height: window.innerHeight,
-            position: 'relative',
-	    display: 'flex',
-	    displayDirection: 'row',
-            justifyContent: 'center',	  
-          }}
+      <div
+        style={{
+          height: window.innerHeight,
+
+          backgroundColor: '#414141',
+          border: 'solid',
+
+          position: 'relative',
+          display: 'flex',
+        }}
       >
-	  <Header></Header>  
-	  <List></List>
-	  <div
-	    style={{
-	      topMargin: '30',
-              display: 'flex',
-	      displayDirection: 'row',
-	      justifyContent: 'center',		    
-	    }}
-	  >
-	    <List></List>
-	  </div>  
-      </div>	    
+        <Header></Header>
+        <div
+          style={{
+            width: window.innerWidth,
+            paddingTop: 200,
+            border: 'solid',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <List></List>
+          <List></List>
+        </div>
+      </div>
     )
   }
 }
