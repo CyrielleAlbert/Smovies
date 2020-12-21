@@ -19,7 +19,6 @@ class App extends Component{
             <Route path="/Board/:id" component={Board} />
             <Route path="/Playground" component = {Playground} />
             <Route component={NotFound} />
-
           </Switch>
         </div>
       </BrowserRouter>
