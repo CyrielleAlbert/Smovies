@@ -1,5 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
+import { logout } from './../helpers/auth.js'
 
 export default function Header({ ...props }) {
   const userId = '@Cyrialkiller'
@@ -80,7 +81,7 @@ export default function Header({ ...props }) {
       </div>
       <div
         style={{
-          width: '40%',
+          width: '20%',
           height: '100%',
           color: '#414141',
           fontSize: 15,
@@ -98,6 +99,23 @@ export default function Header({ ...props }) {
           height={'auto'}
           style={{ borderRadius: 30, border: '2px solid #D40000', marginLeft: '5%' }}
         />
+      </div>
+      <div style={{ width: '20%', height: '100%', alignItems: 'center', justifyContent: 'center', verticalAlign:'center' }}>
+        <div
+          style={{
+            margin:15,
+            width: '50%',
+            padding: 5,
+            backgroundColor: '#D40000',
+            color: 'white',
+            fontSize: 20,
+            textAlign: 'center',
+            borderRadius:93
+          }}
+          onClick={logout}
+        >
+          Logout!
+        </div>
       </div>
     </div>
   )
