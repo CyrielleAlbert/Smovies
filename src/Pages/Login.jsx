@@ -9,6 +9,7 @@ export default class Login extends Component {
       error: null,
       email: '',
       password: '',
+      loading: false,
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -21,6 +22,7 @@ export default class Login extends Component {
   }
 
   async handleSubmit(event) {
+    this.setState({ loading: true })
     event.preventDefault()
     this.setState({ error: '' })
     try {
@@ -55,7 +57,7 @@ export default class Login extends Component {
             paddingTop: 15,
             display: 'flex',
             flexDirection: 'column',
-            textAlign:"center"
+            textAlign: 'center',
           }}
         >
           Smovies
@@ -115,22 +117,26 @@ export default class Login extends Component {
               </div>
               <div>
                 {this.state.error ? <p>{this.state.error}</p> : null}
-                <button
-                  style={{
-                    width: '20%',
-                    backgroundColor: '#D40000',
-                    fontSize: 30,
-                    borderWidth: 0,
-                    borderRadius: 24,
-                    padding: 5,
-                    marginTop: 25,
-                    marginBottom: 50,
-                    color: 'white',
-                    boxShadow: '0px 0px 10px grey',
-                  }}
-                >
-                  Log in
-                </button>
+                {this.state.loading ? (
+                  <div marginTop={25}>Loading...</div>
+                ) : (
+                  <button
+                    style={{
+                      width: '20%',
+                      backgroundColor: '#D40000',
+                      fontSize: 30,
+                      borderWidth: 0,
+                      borderRadius: 24,
+                      padding: 5,
+                      marginTop: 25,
+                      marginBottom: 50,
+                      color: 'white',
+                      boxShadow: '0px 0px 10px grey',
+                    }}
+                  >
+                    Log in
+                  </button>
+                )}
               </div>
               <p>
                 Don't have an account? <Link to="/signup">Register</Link>

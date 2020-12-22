@@ -32,21 +32,21 @@ class Home extends Component {
           </div>
         </div>
         <div style={{ justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-          <NavLink to="/login" style={{textDecoration: 'none', color:'white'}}>
+          <NavLink to="/signup" style={{textDecoration: 'none', color:'white'}}>
             <div
               style={{
                 backgroundColor: '#D40000',
                 fontSize: 30,
                 color: 'white',
-                width: '10%',
+                width: '20%',
                 padding: 5,
                 borderRadius: 93,
                 textAlign: 'center',
-                marginLeft: '45%',
+                marginLeft: '40%',
                 marginTop: 100,
               }}
             >
-              Sign in!
+              Get started
             </div>
           </NavLink>
         </div>

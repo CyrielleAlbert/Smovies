@@ -100,21 +100,22 @@ export default function Header({ ...props }) {
           style={{ borderRadius: 30, border: '2px solid #D40000', marginLeft: '5%' }}
         />
       </div>
-      <div style={{ width: '20%', height: '100%', alignItems: 'center', justifyContent: 'center', verticalAlign:'center' }}>
+      <div style={{ width: '20%', height: '100%', verticalAlign:'center' }}>
         <div
           style={{
             margin:15,
-            width: '50%',
+            marginLeft:'50%',
+            width: '40%',
             padding: 5,
             backgroundColor: '#D40000',
             color: 'white',
-            fontSize: 20,
+            fontSize: 15,
             textAlign: 'center',
             borderRadius:93
           }}
           onClick={logout}
         >
-          Logout!
+          Log out
         </div>
       </div>
     </div>

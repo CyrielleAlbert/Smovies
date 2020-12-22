@@ -1,33 +1,32 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { signup } from '../helpers/auth';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import { signup } from '../helpers/auth'
 
 export default class SignUp extends Component {
-
   constructor() {
-    super();
+    super()
     this.state = {
       error: null,
       email: '',
       password: '',
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleChange(event) {
     this.setState({
-      [event.target.name]: event.target.value
-    });
+      [event.target.name]: event.target.value,
+    })
   }
 
   async handleSubmit(event) {
-    event.preventDefault();
-    this.setState({ error: '' });
+    event.preventDefault()
+    this.setState({ error: '' })
     try {
-      await signup(this.state.email, this.state.password);
+      await signup(this.state.email, this.state.password)
     } catch (error) {
-      this.setState({ error: error.message });
+      this.setState({ error: error.message })
     }
   }
 
@@ -56,7 +55,7 @@ export default class SignUp extends Component {
             paddingTop: 15,
             display: 'flex',
             flexDirection: 'column',
-            textAlign:"center"
+            textAlign: 'center',
           }}
         >
           Smovies
@@ -116,22 +115,26 @@ export default class SignUp extends Component {
               </div>
               <div>
                 {this.state.error ? <p>{this.state.error}</p> : null}
-                <button
-                  style={{
-                    width: '20%',
-                    backgroundColor: '#D40000',
-                    fontSize: 30,
-                    borderWidth: 0,
-                    borderRadius: 24,
-                    padding: 5,
-                    marginTop: 25,
-                    marginBottom: 50,
-                    color: 'white',
-                    boxShadow: '0px 0px 10px grey',
-                  }}
-                >
-                  Sign out
-                </button>
+                {this.state.loading ? (
+                  <div marginTop={25}>Loading...</div>
+                ) : (
+                  <button
+                    style={{
+                      width: '20%',
+                      backgroundColor: '#D40000',
+                      fontSize: 30,
+                      borderWidth: 0,
+                      borderRadius: 24,
+                      padding: 5,
+                      marginTop: 25,
+                      marginBottom: 50,
+                      color: 'white',
+                      boxShadow: '0px 0px 10px grey',
+                    }}
+                  >
+                    Sign out
+                  </button>
+                )}
               </div>
               <p>
                 Already have an account? <Link to="/login">Log in</Link>
