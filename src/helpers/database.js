@@ -55,5 +55,9 @@ export async function createUser(user){
     savedMovies: [],
   })
 }
+export async function deleteBoard(boardId){
+    var user = auth().currentUser
+    database.ref(`boards/${user.uid}/${boardId}`).remove()
+}
 
-export default {createUser, createBoard, getUserBoards, getAllBoards, updateBoard, updateUser};
+export default {createUser, createBoard, getUserBoards, getAllBoards, updateBoard, updateUser, deleteBoard};
