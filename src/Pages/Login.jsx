@@ -1,6 +1,23 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { signin } from '../helpers/auth.js'
+import { updateUser } from '../helpers/database.js'
+import { auth } from '../services/firebase.js'
+
+function utcTimestampToDateString(timestamp){
+  try {
+    // Convert to date object.
+    const date = new Date(Number(timestamp));
+    // Test date is valid.
+    if (!isNaN(date.getTime())) {
+      // Convert to UTC date string.
+      return date.toUTCString();
+    }
+  } catch (e) {
+    // Do nothing. undefined will be returned.
+  }
+  return undefined;
+}
 
 export default class Login extends Component {
   constructor() {
@@ -13,6 +30,7 @@ export default class Login extends Component {
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.user = auth().currentUser
   }
 
   handleChange(event) {
@@ -27,6 +45,7 @@ export default class Login extends Component {
     this.setState({ error: '' })
     try {
       await signin(this.state.email, this.state.password)
+      await updateUser({lastConnection:utcTimestampToDateString(Date.now())})
     } catch (error) {
       this.setState({ error: error.message })
     }

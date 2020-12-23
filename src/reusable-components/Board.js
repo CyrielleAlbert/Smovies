@@ -7,7 +7,6 @@
 
 
 export default function Board({ name, nStars, movies, ...props }) {
-  console.log('hello')
   return (
     <div
       style={{

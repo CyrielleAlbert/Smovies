@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { signup } from '../helpers/auth'
+import { createUser } from '../helpers/database'
+import { auth } from '../services/firebase'
 
 export default class SignUp extends Component {
   constructor() {
@@ -24,7 +26,8 @@ export default class SignUp extends Component {
     event.preventDefault()
     this.setState({ error: '' })
     try {
-      await signup(this.state.email, this.state.password)
+      await signup(this.state.email, this.state.password).then(async() =>{ createUser(auth().currentUser)})
+      await auth().currentUser.sendEmailVerification()
     } catch (error) {
       this.setState({ error: error.message })
     }
@@ -132,7 +135,7 @@ export default class SignUp extends Component {
                       boxShadow: '0px 0px 10px grey',
                     }}
                   >
-                    Sign out
+                    Sign up
                   </button>
                 )}
               </div>
