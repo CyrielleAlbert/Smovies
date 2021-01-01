@@ -1,14 +1,17 @@
 import React, { Component, useEffect } from 'react'
 import Header from './../reusable-components/Header.js'
 import Board from './../reusable-components/Board.js'
-
+import { auth, database } from './../services/firebase.js'
+import Movie from './../reusable-components/MovieView.js'
 const axios = require('axios')
 
+const uuid = 'f9c18570-44ea-11eb-b378-0242ac1300020'
 const board1 = {
-  name: 'Top10',
-  nStars: 15,
+  title: 'Best movies ever',
+  nStars: 20,
   moviesId: [11324, 3594, 629, 1933],
 }
+
 var posters = []
 
 class Discovery extends Component {
@@ -21,10 +24,15 @@ class Discovery extends Component {
       },
       searchText: '',
       loaded: false,
+      boards: [],
+      user: auth().currentUser,
+      search: false,
+      searchResults: [],
     }
   }
 
   async componentDidMount() {
+    console.log(this.state.user)
     try {
       await this.loadPoster()
     } catch (error) {
@@ -32,6 +40,9 @@ class Discovery extends Component {
     }
   }
 
+  /**
+   * Load some posters (depreciated)
+   */
   loadPoster = async () => {
     board1.moviesId.forEach(async (movieId) => {
       try {
@@ -43,7 +54,7 @@ class Discovery extends Component {
         })
         posters.push('https://image.tmdb.org/t/p/original' + movies.data.poster_path)
         if (posters.length == 4) {
-          this.setState({ loaded: true })
+          //this.setState({ loaded: true })
           console.log(this.state.loaded)
           console.log(posters)
         }
@@ -53,16 +64,51 @@ class Discovery extends Component {
     })
   }
 
+  /**
+   * Store the text for search
+   * @param {*} event
+   */
   changeSearch = (event) => {
     this.setState({ searchText: event.target.value })
   }
 
-  handleSearch = (event) => {
-    if (event.key === 'Enter') {
-      console.log('Enter', this.state.searchText)
+  /**
+   * Find a movie in the Movie database
+   */
+  searchMovie = async () => {
+    try {
+      const movies = await axios.get('https://api.themoviedb.org/3/search/movie', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+          query: this.state.searchText,
+        },
+      })
+      this.setState({ loaded: true, searchResults: movies.data.results })
+    } catch (error) {
+      console.log(error)
     }
   }
 
+  /**
+   * Handle the search of movies or boards.
+   * @param {*} event
+   */
+  handleSearch = async (event) => {
+    if (event.key === 'Enter') {
+      if (this.state.toggleBM.type == 'movies') {
+        this.setState({ search: true })
+        await this.searchMovie()
+      } else {
+        //Imp search in Firebase
+        console.log('not implemented')
+      }
+    }
+  }
+
+  /**
+   * Change between type of discovery
+   */
   toggleBoardsMovies = () => {
     if (this.state.toggleBM.type == 'movies') {
       this.setState({
@@ -127,7 +173,12 @@ class Discovery extends Component {
                 </div>
               </div>
             </div>
-            <div style={{ width: '33%', fontWeight: 'bold', letterSpacing: '0.2em' }}>Discover</div>
+            <div
+              style={{ width: '33%', fontWeight: 'bold', letterSpacing: '0.2em' }}
+              onClick={() => this.setState({ search: false, searchText:'' })}
+            >
+              Discover
+            </div>
             <div style={{ width: '33%', textAlign: 'right', paddingRight: '5%' }}>
               <input
                 style={{
@@ -149,7 +200,23 @@ class Discovery extends Component {
             </div>
           </div>
         </div>
-        <Board name={board1.name} nStars={board1.nStars} movies={posters} style={{fontFamily: 'Poppins', fontSize:20}}></Board>
+        {this.state.search &&
+          this.state.loaded &&
+          this.state.searchResults.length > 0 &&
+          this.state.searchResults.map((movie, index) => {
+            return (
+              <div style={{ marginBottom: 50, paddingBottom: 50 }}>
+                <Movie
+                  title={
+                    movie.original_title.length < 8 ? movie.original_title : movie.original_title.slice(0, 8) + '...'
+                  }
+                  voteAverage={movie.vote_average}
+                  posterPath={movie.poster_path}
+                  id={movie.id}
+                ></Movie>
+              </div>
+            )
+          })}
       </div>
     )
   }
