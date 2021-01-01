@@ -3,6 +3,8 @@ import Header from './../reusable-components/Header.js'
 import Board from './../reusable-components/Board.js'
 import { auth, database } from './../services/firebase.js'
 import Movie from './../reusable-components/MovieView.js'
+
+import ReactLoading from 'react-loading'
 const axios = require('axios')
 
 const uuid = 'f9c18570-44ea-11eb-b378-0242ac1300020'
@@ -22,6 +24,7 @@ class Discovery extends Component {
         type: 'movies',
         colors: ['#D40000', '#525252'],
       },
+      loading: false,
       searchText: '',
       loaded: false,
       boards: [],
@@ -54,7 +57,7 @@ class Discovery extends Component {
         })
         posters.push('https://image.tmdb.org/t/p/original' + movies.data.poster_path)
         if (posters.length == 4) {
-          //this.setState({ loaded: true })
+          this.setState({ loaded: true })
           console.log(this.state.loaded)
           console.log(posters)
         }
@@ -84,7 +87,7 @@ class Discovery extends Component {
           query: this.state.searchText,
         },
       })
-      this.setState({ loaded: true, searchResults: movies.data.results })
+      this.setState({ loaded: true, searchResults: movies.data.results, loading: false })
     } catch (error) {
       console.log(error)
     }
@@ -97,10 +100,11 @@ class Discovery extends Component {
   handleSearch = async (event) => {
     if (event.key === 'Enter') {
       if (this.state.toggleBM.type == 'movies') {
-        this.setState({ search: true })
+        this.setState({ search: true, loading: true })
         await this.searchMovie()
       } else {
         //Imp search in Firebase
+        this.setState({ loading: true })
         console.log('not implemented')
       }
     }
@@ -175,7 +179,7 @@ class Discovery extends Component {
             </div>
             <div
               style={{ width: '33%', fontWeight: 'bold', letterSpacing: '0.2em' }}
-              onClick={() => this.setState({ search: false, searchText:'' })}
+              onClick={() => this.setState({ search: false, searchText: '' })}
             >
               Discover
             </div>
@@ -200,23 +204,29 @@ class Discovery extends Component {
             </div>
           </div>
         </div>
-        {this.state.search &&
-          this.state.loaded &&
-          this.state.searchResults.length > 0 &&
-          this.state.searchResults.map((movie, index) => {
-            return (
-              <div style={{ marginBottom: 50, paddingBottom: 50 }}>
-                <Movie
-                  title={
-                    movie.original_title.length < 8 ? movie.original_title : movie.original_title.slice(0, 8) + '...'
-                  }
-                  voteAverage={movie.vote_average}
-                  posterPath={movie.poster_path}
-                  id={movie.id}
-                ></Movie>
-              </div>
-            )
-          })}
+        {this.state.loading && (
+          <div style={{ paddingLeft: '45%' }}>
+            <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
+          </div>
+        )}
+        <div style={{ flexDirection: 'row', display: 'flex' }}>
+          {!this.state.loading &&
+            this.state.search &&
+            this.state.loaded &&
+            this.state.searchResults.length > 0 &&
+            this.state.searchResults.map((movie, index) => {
+              return (
+                <div style={{ margin: 10 }}>
+                  <Movie
+                    title={movie.original_title}
+                    voteAverage={movie.vote_average}
+                    posterPath={movie.poster_path}
+                    id={movie.id}
+                  ></Movie>
+                </div>
+              )
+            })}
+        </div>
       </div>
     )
   }
