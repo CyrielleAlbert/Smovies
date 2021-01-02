@@ -5,9 +5,11 @@ import { auth, database } from './../services/firebase.js'
 import Movie from './../reusable-components/MovieView.js'
 import MovieInfoModal from './../reusable-components/MovieInfoModal.js'
 import ReactLoading from 'react-loading'
+import {getUserBoards} from './../helpers/database'
+
+
 const axios = require('axios')
 
-const uuid = 'f9c18570-44ea-11eb-b378-0242ac1300020'
 const board1 = {
   title: 'Best movies ever',
   nStars: 20,
@@ -45,6 +47,8 @@ class Discovery extends Component {
   async componentDidMount() {
     console.log(this.state.user)
     try {
+      var hello = await getUserBoards()
+      console.log("hi",hello)
       await this.loadPoster()
       await this.discoverMovie()
       await this.getMovieInfo(671)
@@ -52,7 +56,7 @@ class Discovery extends Component {
       console.log(error)
     }
   }
-  
+
   /**
    * Get the info of the movie and open the modal
    * @param {Integer} id 
