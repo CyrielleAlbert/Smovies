@@ -4,7 +4,7 @@
  *
  */
 
-export default function Movie({ title, voteAverage, posterPath, id, ...props }) {
+export default function Movie({ title, voteAverage, posterPath, ...props }) {
   return (
     <div
       style={{
@@ -13,15 +13,15 @@ export default function Movie({ title, voteAverage, posterPath, id, ...props }) 
         display: 'flex',
         width: 156,
         height: 210,
-        backgroundColor: 'red',
+        backgroundColor: 'black',
       }}
     >
-      <div style={{ width: '100%', height: 180, backgroundColor: 'grey' }}>
+      <div style={{ width: '100%', height: 180, backgroundColor: 'grey',}}>
         <img
           src={'https://image.tmdb.org/t/p/original' + posterPath}
           width={'100%'}
           height={'100%'}
-          style={{ objectFit: 'cover', objectPosition: "100% 0" }}
+          style={{ objectFit: 'cover', objectPosition: "100% 0",}}
         />
       </div>
       <div
