@@ -11,6 +11,7 @@ export default function Board({ name, nStars, postersPath, ...props }) {
       <div
         style={{
           width: 156,
+          minWidth: 156,
           height: 210,
           fontFamily: 'Poppins',
           fontSize: 15,
@@ -48,7 +49,9 @@ export default function Board({ name, nStars, postersPath, ...props }) {
             color: 'white',
           }}
         >
-          <div style={{ width: '50%', paddingLeft: 5, textAlign:"left" }}>{name.length < 8 ? name : name.slice(0, 7) + '...'}</div>
+          <div style={{ width: '50%', paddingLeft: 5, textAlign: 'left' }}>
+            {name.length < 8 ? name : name.slice(0, 7) + '...'}
+          </div>
           <div style={{ width: '50%', textAlign: 'right' }}>{nStars + '🌟'}</div>
         </div>
       </div>

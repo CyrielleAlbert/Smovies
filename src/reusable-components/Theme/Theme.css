@@ -1,0 +1,17 @@
+.Theme {
+	width: 95%;
+	height: auto;
+	margin: auto;
+	padding-top: 0px;
+	padding-bottom: 0px;
+
+	background-color: grey;
+	border: solid;
+	font-family: Poppins;
+
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	flex-wrap: nowrap;
+	overflow-x: auto;
+}
