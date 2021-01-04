@@ -14,39 +14,47 @@ export async function getAllBoards() {
 
 export async function getBoardInfo(boardId) {
   var boardInfo = []
-  database.ref(`boards/${boardId}`).on('value', (snapshot) => {
-    boardInfo = snapshot.val()
-  })
+  try {
+    database.ref(`boards/${boardId}`).on('value', (snapshot) => {
+      boardInfo = snapshot.val()
+    })
+  } catch (error) {
+    console.log(error)
+  }
   return boardInfo
+
 }
 
 export async function getUserBoards() {
   var userId = auth().currentUser
-  try{
+  console.log(userId)
+  try {
     var boards = []
     var bInfo = {}
-    database.ref(`users/${userId.uid}/boards`).on('value', async  (snapshot) => {
-      snapshot.forEach((snap) =>{
+    database.ref(`users/${userId.uid}/boards`).on('value', async (snapshot) => {
+      snapshot.forEach((snap) => {
         boards.push(snap.val())
       })
       var boardsInfo = {}
       if (boards.length > 1) {
         boards.forEach(async (value) => {
           var info = await getBoardInfo(value)
+          console.log('info', info)
           boardsInfo[value] = info
         })
-      }else if (boards.length ==1){
-        var boardId=boards[0]
+        console.log(boardsInfo)
+      } else if (boards.length == 1) {
+        var boardId = boards[0]
         var info = await getBoardInfo(boardId)
-        boardsInfo[boardId]=info
-      }else{
+        boardsInfo[boardId] = info
+      } else {
         return []
       }
       console.log(boardsInfo)
       bInfo = boardsInfo
     })
     return bInfo
-  }catch (error){
+  } catch (error) {
     console.log(error)
     return 0
   }

@@ -48,7 +48,6 @@ class Discovery extends Component {
     console.log(this.state.user)
     try {
       var hello = await getUserBoards()
-      console.log("hi",hello)
       await this.loadPoster()
       await this.discoverMovie()
       await this.getMovieInfo(671)
