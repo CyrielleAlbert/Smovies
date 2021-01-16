@@ -5,7 +5,7 @@ import Theme from './reusable-components/Theme/Theme.js'
 const axios = require('axios')
 
 const boardLists = []
-const board1 = {
+var board1 = {
   name: 'Top10',
   nStars: 15,
   moviesId: [1933, 11324, 3594, 629],
@@ -42,7 +42,8 @@ class Playground extends Component {
             language: 'en_US',
           },
         })
-        board1.posters.push('https://image.tmdb.org/t/p/original' + movies.data.poster_path)
+        board1.posters.push(movies.data.poster_path)
+        console.log(board1)
         if (board1.posters.length == 4) {
           this.setState({ loaded: true })
           console.log(this.state.loaded)
@@ -77,9 +78,10 @@ class Playground extends Component {
             flexDirection: 'column',
           }}
         >
-          <Theme
-            boardList={[board1, board1, board1, board1, board1, board1, board1, board1, board1, board1, board1, board1]}
-          ></Theme>
+          {this.state.loaded &&
+            <Theme
+              boardList={[board1, board1, board1, board1, board1, board1, board1, board1, board1, board1, board1, board1]}
+            ></Theme>}
         </div>
       </div>
     )

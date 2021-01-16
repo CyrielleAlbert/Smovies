@@ -14,7 +14,7 @@ export default function Theme({ boardList, ...props }) {
           <Board
             name={board.name}
             nStars={board.nStars}
-            movies={board.posters}
+            postersPath={board.posters}
             style={{ fontFamily: 'Poppins', fontSize: 20 }}
           ></Board>
         )
