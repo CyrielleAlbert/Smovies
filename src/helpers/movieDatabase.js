@@ -1,7 +1,6 @@
 const axios = require('axios')
 
 export async function getBoardPosters(moviesList) {
-  console.log("hi", moviesList)
   var i = 0
   var postersPath = []
   while (postersPath.length < 4 && i < moviesList.length) {

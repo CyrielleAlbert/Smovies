@@ -12,52 +12,35 @@ export async function getAllBoards() {
   return 0
 }
 
-export async function getBoardInfo(boardId) {
-  var boardInfo = []
-  try {
-    database.ref(`boards/${boardId}`).on('value', (snapshot) => {
-      boardInfo = snapshot.val()
-    })
-  } catch (error) {
-    console.log(error)
-  }
-  return boardInfo
-
-}
-
-export async function getUserBoards() {
+export async function getUserBoards(callback) {
   var userId = auth().currentUser
-  console.log(userId)
-  try {
-    var boards = []
-    var bInfo = {}
-    database.ref(`users/${userId.uid}/boards`).on('value', async (snapshot) => {
-      snapshot.forEach((snap) => {
-        boards.push(snap.val())
-      })
-      var boardsInfo = {}
-      if (boards.length > 1) {
-        boards.forEach(async (value) => {
-          var info = await getBoardInfo(value)
-          console.log('info', info)
-          boardsInfo[value] = info
-        })
-        console.log(boardsInfo)
-      } else if (boards.length == 1) {
-        var boardId = boards[0]
-        var info = await getBoardInfo(boardId)
-        boardsInfo[boardId] = info
-      } else {
-        return []
-      }
-      console.log(boardsInfo)
-      bInfo = boardsInfo
+  var boards = []
+  var boardsInfo = {}
+  database.ref(`users/${userId.uid}/boards`).on('value', async (snapshot) => {
+    snapshot.forEach((snap) => {
+      boards.push(snap.val())
     })
-    return bInfo
-  } catch (error) {
-    console.log(error)
-    return 0
-  }
+    if (boards.length > 1) {
+      for (const boardId of boards) {
+        database.ref(`boards/${boardId}`).on('value', (snapshot) => {
+          boardsInfo[boardId] = snapshot.val()
+          if (Object.keys(boardsInfo).length==boards.length){
+            callback(boardsInfo)
+          }
+        })
+      }
+    } else if (boards.length == 1) {
+      var boardId = boards[0]
+      database.ref(`boards/${boardId}`).on('value', (snapshot) => {
+        boardsInfo[boardId] = snapshot.val()
+        callback(boardsInfo)
+      })
+    } else {
+      boardsInfo = null
+      callback(boardsInfo)
+    }
+
+  })
 }
 
 export async function createBoard(board) {

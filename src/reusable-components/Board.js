@@ -5,7 +5,6 @@
  */
 
 export default function Board({ name, nStars, postersPath, ...props }) {
-  console.log('hey', name, nStars, postersPath)
   if (postersPath != undefined) {
     return (
       <div
@@ -48,7 +47,7 @@ export default function Board({ name, nStars, postersPath, ...props }) {
             color: 'white',
           }}
         >
-          <div style={{ width: '50%', paddingLeft: 5, textAlign:"left" }}>{name.length < 8 ? name : name.slice(0, 7) + '...'}</div>
+          <div style={{ width: '50%', paddingLeft: 5, textAlign: "left" }}>{name.length < 8 ? name : name.slice(0, 7) + '...'}</div>
           <div style={{ width: '50%', textAlign: 'right' }}>{nStars + '🌟'}</div>
         </div>
       </div>

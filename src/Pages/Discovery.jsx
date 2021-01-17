@@ -5,9 +5,6 @@ import { auth, database } from './../services/firebase.js'
 import Movie from './../reusable-components/MovieView.js'
 import MovieInfoModal from './../reusable-components/MovieInfoModal.js'
 import ReactLoading from 'react-loading'
-import {getUserBoards} from './../helpers/database'
-
-
 const axios = require('axios')
 
 const board1 = {
@@ -47,7 +44,6 @@ class Discovery extends Component {
   async componentDidMount() {
     console.log(this.state.user)
     try {
-      var hello = await getUserBoards()
       await this.loadPoster()
       await this.discoverMovie()
       await this.getMovieInfo(671)
@@ -62,7 +58,6 @@ class Discovery extends Component {
    */
   openModal = async (id) => {
     try {
-      console.log('id', id)
       await this.getMovieInfo(id)
       this.setState({ modalMovieIsOpen: true })
     } catch (error) {
@@ -128,8 +123,6 @@ class Discovery extends Component {
         posters.push('https://image.tmdb.org/t/p/original' + movies.data.poster_path)
         if (posters.length == 4) {
           this.setState({ loaded: true })
-          console.log(this.state.loaded)
-          console.log(posters)
         }
       } catch (error) {
         console.log(error)

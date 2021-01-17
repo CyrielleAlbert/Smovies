@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { getUserBoards } from '../helpers/database.js'
 import Header from './../reusable-components/Header.js'
 import Board from './../reusable-components/Board.js'
+import { auth } from './../services/firebase'
 import { getBoardPosters } from './../helpers/movieDatabase.js'
 
 const axios = require('axios')
@@ -16,35 +17,26 @@ class MyBoards extends Component {
   }
 
   componentDidMount() {
-    console.log('test1')
-    try {
-      this.loadPosters()
-    } catch (error) {
-      console.log(error)
-    }
+    auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.loadPosters()
+      }
+    });
+  }
+
+  callback = (dbBoards)=>{
+    Object.keys(dbBoards).forEach(async (boardId) => {
+       var posters = {}
+       await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
+       posters = posters_path
+        dbBoards[boardId]['posters'] = posters
+        this.setState({ myBoards: dbBoards, loaded: true })
+       })
+    })
   }
 
   loadPosters = async () => {
-    console.log('test')
-    try {
-      console.log('test2')
-      var dbBoards = await getUserBoards()
-      console.log(dbBoards)
-    } catch (error) {
-      console.log(error)
-    }
-    console.log(dbBoards)
-    Object.keys(dbBoards).map(async (boardId) => {
-      console.log('test4')
-      try {
-        var posters = await getBoardPosters(dbBoards[boardId].movies)
-      } catch (error) {
-        console.log(error)
-      }
-      dbBoards[boardId]['posters'] = posters
-      this.setState({ myBoards: dbBoards, loaded: true })
-      console.log('hi', this.state.myBoards)
-    })
+    getUserBoards(this.callback)
   }
 
   render() {
@@ -82,7 +74,6 @@ class MyBoards extends Component {
           >
             {this.state.loaded &&
               Object.keys(this.state.myBoards).map((boardId, index) => {
-                console.log(this.state.myBoards)
                 return (
                   <div style={{ margin: 10 }}>
                     <Board
@@ -95,19 +86,19 @@ class MyBoards extends Component {
               })}
             <div
               style={{
-                margin:10,
+                margin: 10,
                 width: 156,
                 height: 210,
                 fontFamily: 'Poppins',
                 fontSize: 15,
                 flexWrap: 'wrap',
-                backgroundColor:"#575757",
-                color:"#4C4C4C"
+                backgroundColor: "#575757",
+                color: "#4C4C4C"
               }}
-              onClick={()=>{console.log("To implement")}}
+              onClick={() => { console.log("To implement") }}
             >
-              <div style={{fontSize:91, fontWeight:'bold', paddingTop:'25%'}}>+</div>
-              <div style={{fontSize:15, fontWeight:'normal'}}>Create a board</div>
+              <div style={{ fontSize: 91, fontWeight: 'bold', paddingTop: '25%' }}>+</div>
+              <div style={{ fontSize: 15, fontWeight: 'normal' }}>Create a board</div>
             </div>
             <div
               style={{
