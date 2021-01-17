@@ -4,6 +4,7 @@ import Header from './../reusable-components/Header.js'
 import Board from './../reusable-components/Board.js'
 import { auth } from './../services/firebase'
 import { getBoardPosters } from './../helpers/movieDatabase.js'
+import CreateBoardModal from "./../reusable-components/CreateBoardModal.js"
 
 const axios = require('axios')
 
@@ -13,6 +14,7 @@ class MyBoards extends Component {
     this.state = {
       loaded: false,
       myBoards: undefined,
+      modalCreateBoardIsOpen:false
     }
   }
 
@@ -24,14 +26,14 @@ class MyBoards extends Component {
     });
   }
 
-  callback = (dbBoards)=>{
+  callback = (dbBoards) => {
     Object.keys(dbBoards).forEach(async (boardId) => {
-       var posters = {}
-       await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
-       posters = posters_path
+      var posters = {}
+      await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
+        posters = posters_path
         dbBoards[boardId]['posters'] = posters
         this.setState({ myBoards: dbBoards, loaded: true })
-       })
+      })
     })
   }
 
@@ -49,7 +51,12 @@ class MyBoards extends Component {
         }}
       >
         <Header></Header>
-
+        <CreateBoardModal
+          closeModal={() => {
+            this.setState({ modalCreateBoardIsOpen: false })
+          }}
+          isModalOpen={this.state.modalCreateBoardIsOpen}
+        ></CreateBoardModal>
         <div
           style={{
             paddingTop: 100,
@@ -75,7 +82,7 @@ class MyBoards extends Component {
             {this.state.loaded &&
               Object.keys(this.state.myBoards).map((boardId, index) => {
                 return (
-                  <div style={{ margin: 10 }}>
+                  <div style={{ margin: 10 }} key={boardId}>
                     <Board
                       name={this.state.myBoards[boardId].title}
                       nStars={this.state.myBoards[boardId].nStars}
@@ -95,7 +102,7 @@ class MyBoards extends Component {
                 backgroundColor: "#575757",
                 color: "#4C4C4C"
               }}
-              onClick={() => { console.log("To implement") }}
+              onClick={ ()=>{this.setState({modalCreateBoardIsOpen:true})}}
             >
               <div style={{ fontSize: 91, fontWeight: 'bold', paddingTop: '25%' }}>+</div>
               <div style={{ fontSize: 15, fontWeight: 'normal' }}>Create a board</div>

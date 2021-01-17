@@ -1,5 +1,6 @@
 import Modal from 'react-modal'
 export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard, closeModal, isModalOpen, ...props }) {
+  Modal.setAppElement('body')
   return (
     <Modal
       isOpen={isModalOpen}

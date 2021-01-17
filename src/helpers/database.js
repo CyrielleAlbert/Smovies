@@ -24,7 +24,7 @@ export async function getUserBoards(callback) {
       for (const boardId of boards) {
         database.ref(`boards/${boardId}`).on('value', (snapshot) => {
           boardsInfo[boardId] = snapshot.val()
-          if (Object.keys(boardsInfo).length==boards.length){
+          if (Object.keys(boardsInfo).length == boards.length) {
             callback(boardsInfo)
           }
         })
@@ -39,7 +39,6 @@ export async function getUserBoards(callback) {
       boardsInfo = null
       callback(boardsInfo)
     }
-
   })
 }
 
@@ -52,13 +51,12 @@ export async function createBoard(board) {
     nStars: 0,
     title: board.title,
   })
-  try {
-    var userBoards = await getUserBoards()
-    var updatedUserBoards = userBoards.concat([uid])
-    await updateUser({ boards: updatedUserBoards })
-  } catch (error) {
-    console.log(error)
-  }
+  getUserBoards((userBoards) => {
+    console.log(userBoards)
+    var updatedUserBoards =Object.keys(userBoards).concat([uid])
+    updateUser({ boards: updatedUserBoards })
+  })
+
 }
 
 export async function createUser(user) {

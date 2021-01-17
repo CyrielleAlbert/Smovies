@@ -24,15 +24,18 @@ export default function Board({ name, nStars, postersPath, ...props }) {
             display: 'flex',
           }}
         >
-          {postersPath.map((moviePoster) => {
+          {postersPath.map((moviePoster,index) => {
             return (
-              <div style={{ height: '50%', width: '50%', display: 'flex' }}>
+              <div style={{ height: '50%', width: '50%', display: 'flex' }} key={moviePoster+JSON.stringify(index)}>
+                {moviePoster!==null &&
                 <img
                   src={'https://image.tmdb.org/t/p/original' + moviePoster}
                   width={'100%'}
                   height={'100%'}
                   style={{ objectFit: 'cover', objectPosition: '100% 0' }}
-                />
+                />}
+                {moviePoster==null &&
+                <div style={{width:'100%', height:'100%', color:'grey', backgroundColor:"#575757"}}>No Poster</div>}
               </div>
             )
           })}
