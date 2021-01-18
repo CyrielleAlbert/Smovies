@@ -8,7 +8,7 @@ import ReactLoading from 'react-loading'
 const axios = require('axios')
 
 
-const CreateBoardModal= ({ closeModal, isModalOpen, ...props }) => {
+const CreateBoardModal = ({ closeModal, isModalOpen, ...props }) => {
   Modal.setAppElement('body')
   const [name, setName] = useState(null)
   const [movies, setMovies] = useState([])
@@ -16,6 +16,7 @@ const CreateBoardModal= ({ closeModal, isModalOpen, ...props }) => {
   const [loaded, setLoaded] = useState(false)
   const [loading, setLoading] = useState(false)
   const [searchResults, setSearchResults] = useState([])
+  const [searchResultsAdded, setSearchResultAdded] = useState({})
 
   const searchMovie = async () => {
     try {
@@ -29,6 +30,11 @@ const CreateBoardModal= ({ closeModal, isModalOpen, ...props }) => {
       setLoaded(true)
       setLoading(false)
       setSearchResults(movies.data.results)
+      var searchMoviesTemp = {}
+      for (var movie of movies.data.results) {
+        searchMoviesTemp[movie.id] = false
+      }
+      setSearchResultAdded(searchMoviesTemp)
     } catch (error) {
       console.log(error)
     }
@@ -40,17 +46,16 @@ const CreateBoardModal= ({ closeModal, isModalOpen, ...props }) => {
       await searchMovie()
     }
   }
-  
+
   const addMovie = (movieId) => {
     console.log("Hi")
-    if (movies.includes(movieId)){
+    if (movies.includes(movieId)) {
       console.log("Already in the list")
-    } else{
+    } else {
       console.log("Added to the list!")
-      var movies_temp = movies
-      movies_temp.push(movieId)
-      setMovies(movies_temp)
+      setMovies([...movies,movieId])
     }
+    setSearchResultAdded({...searchResultsAdded, [movieId]: true})
   }
 
   return (
@@ -118,7 +123,7 @@ const CreateBoardModal= ({ closeModal, isModalOpen, ...props }) => {
           placeholder="Search"
           value={search}
           onChange={(event) => { setSearch(event.target.value) }}
-          onKeyDown={(event)=> {handleSearch(event)}}
+          onKeyDown={(event) => { handleSearch(event) }}
         />
         {loading && (
           <div style={{ paddingLeft: '45%' }}>
@@ -137,63 +142,79 @@ const CreateBoardModal= ({ closeModal, isModalOpen, ...props }) => {
             marginTop: 50,
           }}
         >
-        {!loading && loaded && searchResults.length > 0 &&
-          searchResults.map((movie, index) => {
-            return (
-              <div style={{ margin: 10 }} onClick={() => addMovie(movie.id)}>
-                <Movie
-                  title={movie.original_title}
-                  voteAverage={movie.vote_average}
-                  posterPath={movie.poster_path}
-                ></Movie>
-              </div>
-            )
-          })}
+          {!loading && loaded && searchResults.length > 0 &&
+            searchResults.map((movie, index) => {
+              console.log("bonjour",searchResultsAdded)
+              return (
+                <div style={{ margin: 10 }} onClick={() => addMovie(movie.id)}>
+                  <Movie
+                    title={movie.original_title}
+                    voteAverage={movie.vote_average}
+                    posterPath={movie.poster_path}
+                  ></Movie>
+                  {searchResultsAdded[movie.id] &&
+                    <div style={{
+                      backgroundColor: "#D40000",
+                      position: "relative",
+                      top: -200,
+                      left: 10,
+                      padding: 5,
+                      fontSize: 10,
+                      textAlign: "center",
+                      width: "30%",
+                      borderRadius: 14,
+                      margin: 0
+                    }}>
+                      Added ✓</div>}
+                </div>
+              )
+            })}
 
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
-        <div style={{ width: '50%' }}>
-          <button
-            style={{
-              backgroundColor: '#D40000',
-              borderRadius: 31,
-              borderWidth: 0,
-              padding: 10,
-              fontSize: 20,
-              color: 'white',
-              width: '50%',
-              textAlign: 'center',
-            }}
-            onClick={() => {
-              if (name != null) {
-                createBoard({ moviesId: movies, title: name, })
-                closeModal()
-              } else {
-                console.log("ouuups no name")
-              }
-            }}
-          >
-            + Create the board
-          </button>
         </div>
-        <div style={{ width: '50%', justifyContent: 'flex-end', display: 'flex' }}>
-          <button
-            style={{
-              backgroundColor: '#4C4C4C',
-              borderRadius: 31,
-              borderWidth: 0,
-              padding: 10,
-              fontSize: 20,
-              color: 'white',
-              width: '50%',
-              textAlign: 'center',
-            }}
-            onClick={closeModal}
-          >
-            close
+        <div style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
+          <div style={{ width: '50%' }}>
+            <button
+              style={{
+                backgroundColor: '#D40000',
+                borderRadius: 31,
+                borderWidth: 0,
+                padding: 10,
+                fontSize: 20,
+                color: 'white',
+                width: '50%',
+                textAlign: 'center',
+              }}
+              onClick={() => {
+                if (name != null) {
+                  createBoard({ moviesId: movies, title: name, })
+                  closeModal()
+                  window.location.reload(false)
+                } else {
+                  console.log("ouuups no name")
+                }
+              }}
+            >
+              + Create the board
           </button>
+          </div>
+          <div style={{ width: '50%', justifyContent: 'flex-end', display: 'flex' }}>
+            <button
+              style={{
+                backgroundColor: '#4C4C4C',
+                borderRadius: 31,
+                borderWidth: 0,
+                padding: 10,
+                fontSize: 20,
+                color: 'white',
+                width: '50%',
+                textAlign: 'center',
+              }}
+              onClick={closeModal}
+            >
+              close
+          </button>
+          </div>
         </div>
-      </div>
       </div>
     </Modal >
   )

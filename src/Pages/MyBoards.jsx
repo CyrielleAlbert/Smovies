@@ -14,7 +14,7 @@ class MyBoards extends Component {
     this.state = {
       loaded: false,
       myBoards: undefined,
-      modalCreateBoardIsOpen:false
+      modalCreateBoardIsOpen: false,
     }
   }
 
@@ -79,10 +79,28 @@ class MyBoards extends Component {
               fontSize: 20,
             }}
           >
+            <div
+              style={{
+                flexWrap: 'wrap',
+                fontFamily: 'Poppins',
+                fontSize: 15,
+                backgroundColor: "#575757",
+                color: "#4C4C4C",
+                margin: 10,
+                minWidth: 156,
+                minHeight: 210,
+              }}
+              onClick={() => { this.setState({ modalCreateBoardIsOpen: true }) }}
+            >
+              <div style={{ fontSize: 91, fontWeight: 'bold', paddingTop: '25%' }}>+</div>
+              <div style={{ fontSize: 15, fontWeight: 'normal' }}>Create a board</div>
+            </div>
             {this.state.loaded &&
               Object.keys(this.state.myBoards).map((boardId, index) => {
                 return (
-                  <div style={{ margin: 10 }} key={boardId}>
+                  <div style={{
+                    margin: 10,
+                  }} key={boardId}>
                     <Board
                       name={this.state.myBoards[boardId].title}
                       nStars={this.state.myBoards[boardId].nStars}
@@ -93,19 +111,13 @@ class MyBoards extends Component {
               })}
             <div
               style={{
-                margin: 10,
-                width: 156,
-                height: 210,
+                flexWrap: 'wrap',
                 fontFamily: 'Poppins',
                 fontSize: 15,
-                flexWrap: 'wrap',
-                backgroundColor: "#575757",
-                color: "#4C4C4C"
-              }}
-              onClick={ ()=>{this.setState({modalCreateBoardIsOpen:true})}}
-            >
-              <div style={{ fontSize: 91, fontWeight: 'bold', paddingTop: '25%' }}>+</div>
-              <div style={{ fontSize: 15, fontWeight: 'normal' }}>Create a board</div>
+                margin: 10,
+                minWidth: 156,
+                minHeight: 210,
+              }}>
             </div>
             <div
               style={{
