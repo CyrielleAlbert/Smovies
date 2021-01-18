@@ -39,7 +39,6 @@ class Discovery extends Component {
         voteAverage: null,
       },
     }
-    console.log(process.env.REACT_APP_MOVIES_API_KEY)
   }
 
   async componentDidMount() {
