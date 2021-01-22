@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { getUserBoards } from '../helpers/database.js'
 import Header from './../reusable-components/Header.js'
-import Board from './../reusable-components/Board.js'
+import BoardView from '../reusable-components/BoardView.js'
 import { auth } from './../services/firebase'
 import { getBoardPosters } from './../helpers/movieDatabase.js'
 import CreateBoardModal from "./../reusable-components/CreateBoardModal.js"
+import { NavLink } from 'react-router-dom'
+import ReactLoading from 'react-loading'
 
 const axios = require('axios')
 
@@ -32,6 +34,7 @@ class MyBoards extends Component {
       await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
         posters = posters_path
         dbBoards[boardId]['posters'] = posters
+        console.log(JSON.stringify(dbBoards))
         this.setState({ myBoards: dbBoards, loaded: true })
       })
     })
@@ -95,18 +98,32 @@ class MyBoards extends Component {
               <div style={{ fontSize: 91, fontWeight: 'bold', paddingTop: '25%' }}>+</div>
               <div style={{ fontSize: 15, fontWeight: 'normal' }}>Create a board</div>
             </div>
+            {!this.state.loaded &&
+              <div style={{ paddingLeft: '45%' }}>
+                <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
+              </div>}
             {this.state.loaded &&
               Object.keys(this.state.myBoards).map((boardId, index) => {
+                console.log(this.state.myBoards[boardId].posters)
                 return (
-                  <div style={{
-                    margin: 10,
-                  }} key={boardId}>
-                    <Board
-                      name={this.state.myBoards[boardId].title}
-                      nStars={this.state.myBoards[boardId].nStars}
-                      postersPath={this.state.myBoards[boardId].posters}
-                    ></Board>
-                  </div>
+                  <NavLink
+                    to={{
+                      pathname: "/board/" + boardId,
+                      aboutProps: { state: { boardInfo: this.state.myBoards[boardId] } }
+                    }}
+
+                    style={{ textDecoration: "none" }}
+                  >
+                    <div style={{
+                      margin: 10,
+                    }} key={boardId}>
+                      <BoardView
+                        name={this.state.myBoards[boardId].title}
+                        nStars={this.state.myBoards[boardId].nStars}
+                        postersPath={this.state.myBoards[boardId].posters}
+                      ></BoardView>
+                    </div>
+                  </NavLink>
                 )
               })}
             <div

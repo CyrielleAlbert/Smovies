@@ -53,7 +53,7 @@ export async function createBoard(board) {
   })
   getUserBoards((userBoards) => {
     console.log(userBoards)
-    var updatedUserBoards =Object.keys(userBoards).concat([uid])
+    var updatedUserBoards = Object.keys(userBoards).concat([uid])
     updateUser({ boards: updatedUserBoards })
   })
 
@@ -71,7 +71,26 @@ export async function createUser(user) {
 }
 
 export async function updateBoard(boardId, updatedValues) {
-  database.ref(`boards/${boardId}`).update(updatedValues)
+  console.log(updatedValues)
+  try {
+    database.ref(`boards/${boardId}`).update(updatedValues)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function addMovieToBoard(boardId, movieId) {
+  console.log(boardId, movieId)
+  database.ref(`boards/${boardId}`).on('value', (snapshot) => {
+    var movies = [...snapshot.val().movies, movieId]
+    var moviesTemp = []
+    for (var movie of movies) {
+      if (!moviesTemp.includes(movie)) {
+        moviesTemp.push(movie)
+      }
+    }
+    updateBoard(boardId, { movies: moviesTemp })
+  })
 }
 
 export async function updateUser(updatedValues) {
@@ -84,4 +103,4 @@ export async function deleteBoard(boardId) {
   database.ref(`boards/${user.uid}/${boardId}`).remove()
 }
 
-export default { createUser, createBoard, getUserBoards, getAllBoards, updateBoard, updateUser, deleteBoard }
+export default { createUser, createBoard, getUserBoards, getAllBoards, updateBoard, addMovieToBoard, updateUser, deleteBoard }

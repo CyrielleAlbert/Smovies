@@ -31,7 +31,7 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
       >
         <div style={{ width: '25%' }}>
           <img
-            src={posterPath}
+            src={'https://image.tmdb.org/t/p/original'+posterPath}
             width={'100%'}
             height={'auto'}
             style={{ filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))', borderRadius: 17 }}
@@ -64,7 +64,7 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
             }}
             onClick={addToBoard}
           >
-            + Add to a board
+            + Add to board
           </button>
         </div>
         <div style={{ width: '50%', justifyContent: 'flex-end', display: 'flex' }}>

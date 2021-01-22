@@ -15,6 +15,7 @@ export default function Header({ ...props }) {
         display: 'flex',
         flexDirection: 'row',
         position: 'fixed',
+        zIndex:5,
       }}
     >
       <div

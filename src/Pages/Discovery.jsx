@@ -1,19 +1,11 @@
 import React, { Component, useEffect } from 'react'
 import Header from './../reusable-components/Header.js'
-import Board from './../reusable-components/Board.js'
+import BoardView from '../reusable-components/BoardView.js'
 import { auth, database } from './../services/firebase.js'
 import Movie from './../reusable-components/MovieView.js'
 import MovieInfoModal from './../reusable-components/MovieInfoModal.js'
 import ReactLoading from 'react-loading'
 const axios = require('axios')
-
-const board1 = {
-  title: 'Best movies ever',
-  nStars: 20,
-  moviesId: [11324, 3594, 629, 1933],
-}
-
-var posters = []
 
 class Discovery extends Component {
   constructor(props) {
@@ -44,7 +36,6 @@ class Discovery extends Component {
   async componentDidMount() {
     console.log(this.state.user)
     try {
-      await this.loadPoster()
       await this.discoverMovie()
       await this.getMovieInfo(671)
     } catch (error) {
@@ -79,7 +70,7 @@ class Discovery extends Component {
       })
       const modalInfo = {
         title: movieInfo.data.original_title,
-        poster_path: 'https://image.tmdb.org/t/p/original' + movieInfo.data.poster_path,
+        poster_path: movieInfo.data.poster_path,
         synopsis: movieInfo.data.overview,
         voteAverage: movieInfo.data.vote_average,
       }
@@ -106,28 +97,6 @@ class Discovery extends Component {
     } catch (error) {
       console.log(error)
     }
-  }
-
-  /**
-   * Load some posters (depreciated)
-   */
-  loadPoster = async () => {
-    board1.moviesId.forEach(async (movieId) => {
-      try {
-        const movies = await axios.get('https://api.themoviedb.org/3/movie/' + movieId, {
-          params: {
-            api_key: process.env.REACT_APP_MOVIES_API_KEY,
-            language: 'en_US',
-          },
-        })
-        posters.push('https://image.tmdb.org/t/p/original' + movies.data.poster_path)
-        if (posters.length == 4) {
-          this.setState({ loaded: true })
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    })
   }
 
   /**
@@ -199,7 +168,7 @@ class Discovery extends Component {
       <div
         style={{
           backgroundColor: '#414141',
-          height: window.innerHeight,
+          minHeight: window.innerHeight,
           position: 'relative',
         }}
       >
@@ -284,7 +253,7 @@ class Discovery extends Component {
             <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
           </div>
         )}
-        {!this.state.search && (
+        {!this.state.search && this.state.toggleBM.type=="movies" && (
           <div
             style={{
               display: 'flex',
@@ -301,7 +270,7 @@ class Discovery extends Component {
               return (
                 <div style={{ margin: 10 }} onClick={() => this.openModal(movie.id)}>
                   <Movie
-                    title={movie.original_title}
+                    title={movie.title}
                     voteAverage={movie.vote_average}
                     posterPath={movie.poster_path}
                   ></Movie>
@@ -343,7 +312,7 @@ class Discovery extends Component {
               return (
                 <div style={{ margin: 10 }} onClick={() => this.openModal(movie.id)}>
                   <Movie
-                    title={movie.original_title}
+                    title={movie.title}
                     voteAverage={movie.vote_average}
                     posterPath={movie.poster_path}
                   ></Movie>
