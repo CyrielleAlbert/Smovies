@@ -115,7 +115,6 @@ class Board extends Component {
         addMovieToBoard(this.props.match.params.id, movieId)
         console.log("Added to the list!")
         this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
-        //window.location.reload(false)
       }
     } else {
       console.log('MovieId null')
@@ -159,8 +158,8 @@ class Board extends Component {
             }}>
               <div
                 style={{
-                  width: '25%',
-                  marginLeft: "10%",
+                  width: 400,
+                  marginLeft: 100,
                 }}>
                 <BoardView
                   name={this.state.boardInfo.title}
@@ -173,7 +172,7 @@ class Board extends Component {
                   zIndec={2}></BoardView>
               </div>
               <div style={{
-                width: "55%",
+                width: 900,
                 fontFamily: 'Poppins',
                 color: '#D4D4D4',
                 fontSize: 15,
@@ -193,7 +192,7 @@ class Board extends Component {
                 <div style={{ flexDirection: 'row', display: 'flex', }}>
                   <div style={{ width: '15%' }}>{this.state.boardInfo.movies.length} movies </div>
                   <div style={{ width: '15%' }}>{this.state.boardInfo.nStars} stars </div>
-                  <div style={{ width: '20%' }}> Last update: Unknown </div>
+                  <div style={{ width: '20%' }}> Last update: {("0" + new Date(this.state.boardInfo.lastUpdate).getDate()).slice(-2)}/{("0" + new Date(this.state.boardInfo.lastUpdate).getMonth() + 1).slice(-2)}/{new Date(this.state.boardInfo.lastUpdate).getFullYear()}</div>
                 </div>
               </div>
             </div>
@@ -229,7 +228,7 @@ class Board extends Component {
             <div>
               <div style={{ display: 'flex', flexDirection: 'row', marginTop: 50 }}>
                 <div style={{
-                  width: '60%',
+                  width: 1200,
                   color: '#8C8C8C',
                   fontFamily: 'Poppins',
                   fontWeight: 'bolder',
@@ -238,9 +237,8 @@ class Board extends Component {
                   marginBottom: 0
                 }}>Add to the board: </div>
                 <div style={{
-                  width: '20%',
+                  width: 200,
                   margin: 20,
-                  marginLeft: '20%',
                   marginBottom: 0
                 }}>
                   <input
@@ -322,7 +320,7 @@ class Board extends Component {
               </div>
             </div>
           </div>}
-          <div style={{width:"auto", height: 100, paddingTop:40, color:"#D4D4D4", fontFamily:"Poppins", fontSize:15, textAlign: "center"}}> Smovies Copyright 2021 ©</div>
+        <div style={{ width: "auto", height: 100, paddingTop: 40, color: "#D4D4D4", fontFamily: "Poppins", fontSize: 15, textAlign: "center" }}> Smovies Copyright 2021 ©</div>
       </div>
     )
   }

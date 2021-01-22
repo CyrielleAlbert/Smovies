@@ -1,6 +1,21 @@
 import { auth, database } from './../services/firebase.js'
 import uuid from 'react-uuid'
 
+function utcTimestampToDateString(timestamp){
+  try {
+    // Convert to date object.
+    const date = new Date(Number(timestamp));
+    // Test date is valid.
+    if (!isNaN(date.getTime())) {
+      // Convert to UTC date string.
+      return date.toUTCString();
+    }
+  } catch (e) {
+    // Do nothing. undefined will be returned.
+  }
+  return undefined;
+}
+
 export async function getAllBoards() {
   database.ref('boards').on('value', (snapshot) => {
     let allBoards = []
@@ -89,7 +104,7 @@ export async function addMovieToBoard(boardId, movieId) {
         moviesTemp.push(movie)
       }
     }
-    updateBoard(boardId, { movies: moviesTemp })
+    updateBoard(boardId, { movies: moviesTemp, lastUpdate: utcTimestampToDateString(Date.now())})
   })
 }
 
