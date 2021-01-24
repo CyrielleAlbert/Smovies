@@ -60,6 +60,6 @@ export default function BoardView({ name, nStars, postersPath, hideBanner = fals
       </div>
     )
   } else {
-    return <div>Error</div>
+    return <div></div>
   }
 }
