@@ -14,7 +14,9 @@ export default function BoardView({ name, nStars, postersPath, hideBanner = fals
           fontFamily: 'Poppins',
           fontSize: 15,
           flexWrap: 'wrap',
+          filter:"drop-shadow(0px 4px 10px rgba(255, 255, 255, 0.05))",
           ...props,
+
         }}
       >
         <div

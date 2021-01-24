@@ -13,7 +13,6 @@ const axios = require('axios')
 class Board extends Component {
   constructor(props) {
     super(props)
-    console.log("props", props)
     this.state = {
       boardId: null,
       boardInfo: {},
@@ -36,13 +35,11 @@ class Board extends Component {
   }
 
   componentDidMount() {
-    console.log("hi")
     this.setState({ boardId: this.props.match.params.id })
     this.getBoardInfo()
   }
 
   getBoardInfo = async () => {
-    console.log(this.props.match.params.id)
     database.ref(`boards/${this.props.match.params.id}`).on('value', (snapshot) => {
       this.setState({ boardInfo: snapshot.val() })
       var movies = snapshot.val().movies
@@ -51,7 +48,6 @@ class Board extends Component {
         this.setState({ boardInfo: { ...this.state.boardInfo, ...boardPosters } })
         getMoviesInfo(movies).then((moviesInfo) => {
           var moviesInfo = moviesInfo
-          console.log(moviesInfo)
           this.setState({ moviesInfo: { ...moviesInfo, }, loaded: true })
         })
       })
@@ -84,7 +80,6 @@ class Board extends Component {
           query: this.state.searchText,
         },
       })
-      console.log(movies.data.results)
       var searchMoviesTemp = {}
       for (var movie of movies.data.results) {
         searchMoviesTemp[movie.id] = false

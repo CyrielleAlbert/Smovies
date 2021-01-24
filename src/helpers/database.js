@@ -1,7 +1,7 @@
 import { auth, database } from './../services/firebase.js'
 import uuid from 'react-uuid'
 
-function utcTimestampToDateString(timestamp){
+function utcTimestampToDateString(timestamp) {
   try {
     // Convert to date object.
     const date = new Date(Number(timestamp));
@@ -27,6 +27,13 @@ export async function getAllBoards() {
   return 0
 }
 
+export async function getUserInfo(callback) {
+  var userId = auth().currentUser
+  database.ref(`users/${userId.uid}`).on('value', async (snapshot) => {
+    callback(snapshot.val())
+  })
+}
+
 export async function getUserBoards(callback) {
   var userId = auth().currentUser
   var boards = []
@@ -47,12 +54,10 @@ export async function getUserBoards(callback) {
     } else if (boards.length == 1) {
       var boardId = boards[0]
       database.ref(`boards/${boardId}`).on('value', (snapshot) => {
-        boardsInfo[boardId] = snapshot.val()
-        callback(boardsInfo)
+        callback({ [boardId]: snapshot.val() })
       })
     } else {
-      boardsInfo = null
-      callback(boardsInfo)
+      callback(null)
     }
   })
 }
@@ -67,9 +72,14 @@ export async function createBoard(board) {
     title: board.title,
   })
   getUserBoards((userBoards) => {
-    console.log(userBoards)
-    var updatedUserBoards = Object.keys(userBoards).concat([uid])
-    updateUser({ boards: updatedUserBoards })
+    if (userBoards != null && userBoards != undefined) {
+      if (!Object.keys(userBoards).includes(uid)) {
+        var updatedUserBoards = Object.keys(userBoards).concat([uid])
+        updateUser({ boards: updatedUserBoards })
+      }
+    } else {
+      updateUser({ boards: [uid] })
+    }
   })
 
 }
@@ -86,7 +96,6 @@ export async function createUser(user) {
 }
 
 export async function updateBoard(boardId, updatedValues) {
-  console.log(updatedValues)
   try {
     database.ref(`boards/${boardId}`).update(updatedValues)
   } catch (error) {
@@ -95,7 +104,6 @@ export async function updateBoard(boardId, updatedValues) {
 }
 
 export async function addMovieToBoard(boardId, movieId) {
-  console.log(boardId, movieId)
   database.ref(`boards/${boardId}`).on('value', (snapshot) => {
     var movies = [...snapshot.val().movies, movieId]
     var moviesTemp = []
@@ -104,7 +112,7 @@ export async function addMovieToBoard(boardId, movieId) {
         moviesTemp.push(movie)
       }
     }
-    updateBoard(boardId, { movies: moviesTemp, lastUpdate: utcTimestampToDateString(Date.now())})
+    updateBoard(boardId, { movies: moviesTemp, lastUpdate: utcTimestampToDateString(Date.now()) })
   })
 }
 
@@ -118,4 +126,4 @@ export async function deleteBoard(boardId) {
   database.ref(`boards/${user.uid}/${boardId}`).remove()
 }
 
-export default { createUser, createBoard, getUserBoards, getAllBoards, updateBoard, addMovieToBoard, updateUser, deleteBoard }
+export default { createUser, createBoard, getUserBoards, getUserInfo, getAllBoards, updateBoard, addMovieToBoard, updateUser, deleteBoard }

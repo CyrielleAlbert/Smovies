@@ -15,7 +15,7 @@ export default function Header({ ...props }) {
         display: 'flex',
         flexDirection: 'row',
         position: 'fixed',
-        zIndex:5,
+        zIndex: 5,
       }}
     >
       <div
@@ -85,34 +85,32 @@ export default function Header({ ...props }) {
           width: '20%',
           height: '100%',
           color: '#414141',
-          fontSize: 15,
-          fontWeight: 'normal',
+          fontSize: 20,
+          fontWeight: 'bolder',
+          letterSpacing: '0.2em',
+          textAlign: 'center',
           alignItems: 'center',
           justifyContent: 'center',
           display: 'flex',
-          flexDirection: 'row',
+
         }}
       >
-        {userId}
-        <img
-          src={pictureLink}
-          width={50}
-          height={'auto'}
-          style={{ borderRadius: 30, border: '2px solid #D40000', marginLeft: '5%' }}
-        />
+        <NavLink to="/MyAccount" style={{ textDecoration: 'none', color: '#414141' }}>
+          My Account
+        </NavLink>
       </div>
-      <div style={{ width: '20%', height: '100%', verticalAlign:'center' }}>
+      <div style={{ width: '20%', height: '100%', verticalAlign: 'center' }}>
         <div
           style={{
-            margin:15,
-            marginLeft:'50%',
+            margin: 15,
+            marginLeft: '50%',
             width: '40%',
             padding: 5,
             backgroundColor: '#D40000',
             color: 'white',
             fontSize: 15,
             textAlign: 'center',
-            borderRadius:93
+            borderRadius: 93
           }}
           onClick={logout}
         >

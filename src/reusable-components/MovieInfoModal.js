@@ -6,7 +6,7 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
       isOpen={isModalOpen}
       onRequestClose={closeModal}
       style={{
-        overlay: { backgroundColor: 'rgba(65, 65, 65, 0.01)', backdropFilter: 'blur(10px)',},
+        overlay: { backgroundColor: 'rgba(65, 65, 65, 0.01)', backdropFilter: 'blur(10px)', },
         content: {
           marginTop: 60,
           marginBottom: 10,
@@ -31,7 +31,7 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
       >
         <div style={{ width: '25%' }}>
           <img
-            src={'https://image.tmdb.org/t/p/original'+posterPath}
+            src={'https://image.tmdb.org/t/p/original' + posterPath}
             width={'100%'}
             height={'auto'}
             style={{ filter: 'drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))', borderRadius: 17 }}
@@ -53,6 +53,23 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
         <div style={{ width: '50%' }}>
           <button
             style={{
+              backgroundColor: '#4C4C4C',
+              borderRadius: 31,
+              borderWidth: 0,
+              padding: 10,
+              fontSize: 20,
+              color: 'white',
+              width: '50%',
+              textAlign: 'center',
+            }}
+            onClick={closeModal}
+          >
+            ← Back to movies
+          </button>
+        </div>
+        <div style={{ width: '50%', justifyContent: 'flex-end', display: 'flex' }}>
+          <button
+            style={{
               backgroundColor: '#D40000',
               borderRadius: 31,
               borderWidth: 0,
@@ -65,23 +82,6 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
             onClick={addToBoard}
           >
             + Add to board
-          </button>
-        </div>
-        <div style={{ width: '50%', justifyContent: 'flex-end', display: 'flex' }}>
-          <button
-            style={{
-              backgroundColor: '#4C4C4C',
-              borderRadius: 31,
-              borderWidth: 0,
-              padding: 10,
-              fontSize: 20,
-              color: 'white',
-              width: '50%',
-              textAlign: 'center',
-            }}
-            onClick={closeModal}
-          >
-            close
           </button>
         </div>
       </div>

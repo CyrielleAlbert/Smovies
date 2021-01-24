@@ -10,6 +10,7 @@ import Login from './Pages/Login.jsx'
 import Signup from './Pages/Signup.jsx'
 import Home from './Pages/Home.jsx'
 import { auth } from './services/firebase.js'
+import MyAccount from './Pages/MyAccount.jsx'
 
 function PrivateRoute({ component: Component, authenticated, ...rest }) {
   return (
@@ -72,6 +73,7 @@ class App extends Component {
             <PublicRoute path="/signup" authenticated={this.state.authenticated} component={Signup} />
             <PrivateRoute path="/feed" authenticated={this.state.authenticated} component={Feed} />
             <PrivateRoute path="/myBoards" authenticated={this.state.authenticated} component={MyBoards} />
+            <PrivateRoute path="/myAccount" authenticated={this.state.authenticated} component={MyAccount} />
             <PrivateRoute path="/discovery" authenticated={this.state.authenticated} component={Discovery} />
             <PrivateRoute path="/board/:id" authenticated={this.state.authenticated} component={Board} />
             <PrivateRoute path="/playground" authenticated={this.state.authenticated} component={Playground} />

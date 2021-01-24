@@ -29,15 +29,18 @@ class MyBoards extends Component {
   }
 
   callback = (dbBoards) => {
-    Object.keys(dbBoards).forEach(async (boardId) => {
-      var posters = {}
-      await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
-        posters = posters_path
-        dbBoards[boardId]['posters'] = posters
-        console.log(JSON.stringify(dbBoards))
-        this.setState({ myBoards: dbBoards, loaded: true })
+    if (dbBoards != null) {
+      Object.keys(dbBoards).forEach(async (boardId) => {
+        var posters = {}
+        await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
+          posters = posters_path
+          dbBoards[boardId]['posters'] = posters
+          this.setState({ myBoards: dbBoards, loaded: true })
+        })
       })
-    })
+    } else {
+      this.setState({ myBoards: {}, loaded: true })
+    }
   }
 
   loadPosters = async () => {
@@ -104,7 +107,6 @@ class MyBoards extends Component {
               </div>}
             {this.state.loaded &&
               Object.keys(this.state.myBoards).map((boardId, index) => {
-                console.log(this.state.myBoards[boardId].posters)
                 return (
                   <NavLink
                     to={{

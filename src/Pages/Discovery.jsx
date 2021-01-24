@@ -34,7 +34,6 @@ class Discovery extends Component {
   }
 
   async componentDidMount() {
-    console.log(this.state.user)
     try {
       await this.discoverMovie()
       await this.getMovieInfo(671)
@@ -74,7 +73,6 @@ class Discovery extends Component {
         synopsis: movieInfo.data.overview,
         voteAverage: movieInfo.data.vote_average,
       }
-      console.log(modalInfo)
       this.setState({ modalMovie: modalInfo })
     } catch (error) {
       console.log(error)
@@ -137,7 +135,7 @@ class Discovery extends Component {
       } else {
         //Imp search in Firebase
         this.setState({ loading: true })
-        console.log('not implemented')
+        console.log('TODO')
       }
     }
   }
@@ -253,7 +251,7 @@ class Discovery extends Component {
             <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
           </div>
         )}
-        {!this.state.search && this.state.toggleBM.type=="movies" && (
+        {!this.state.search && this.state.toggleBM.type == "movies" && (
           <div
             style={{
               display: 'flex',
@@ -318,9 +316,28 @@ class Discovery extends Component {
                   ></Movie>
                 </div>
               )
-            })}
+            })
+          }
+          {!this.state.loading &&
+            this.state.search &&
+            this.state.loaded &&
+            this.state.searchResults.length > 0 &&
+            < div
+              style={{
+                position: 'absolute',
+                top: 178,
+                left: 20,
+                color: '#8C8C8C',
+                fontFamily: 'Poppins',
+                fontWeight: 'bolder',
+                fontSize: 20,
+              }}
+            >
+              Search results
+            </div>
+          }
         </div>
-      </div>
+      </div >
     )
   }
 }

@@ -48,7 +48,6 @@ const CreateBoardModal = ({ closeModal, isModalOpen, ...props }) => {
   }
 
   const addMovie = (movieId) => {
-    console.log("Hi")
     if (movies.includes(movieId)) {
       console.log("Already in the list")
     } else {
@@ -144,7 +143,6 @@ const CreateBoardModal = ({ closeModal, isModalOpen, ...props }) => {
         >
           {!loading && loaded && searchResults.length > 0 &&
             searchResults.map((movie, index) => {
-              console.log("bonjour",searchResultsAdded)
               return (
                 <div style={{ margin: 10 }} onClick={() => addMovie(movie.id)}>
                   <Movie
@@ -190,7 +188,7 @@ const CreateBoardModal = ({ closeModal, isModalOpen, ...props }) => {
                   closeModal()
                   window.location.reload(false)
                 } else {
-                  console.log("ouuups no name")
+                  console.log("ouuups no name  TODO")
                 }
               }}
             >
