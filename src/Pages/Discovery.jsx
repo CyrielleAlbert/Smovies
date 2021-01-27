@@ -5,6 +5,8 @@ import { auth, database } from './../services/firebase.js'
 import Movie from './../reusable-components/MovieView.js'
 import MovieInfoModal from './../reusable-components/MovieInfoModal.js'
 import ReactLoading from 'react-loading'
+import { getUserBoards, addMovieToBoard } from '../helpers/database.js'
+
 const axios = require('axios')
 
 class Discovery extends Component {
@@ -20,11 +22,13 @@ class Discovery extends Component {
       loaded: false,
       boards: [],
       user: auth().currentUser,
+      userBoards: {},
       search: false,
       searchResults: [],
       discoverMovies: [],
       modalMovieIsOpen: false,
       modalMovie: {
+        movieId: null,
         poster_path: null,
         title: null,
         synopsis: null,
@@ -37,6 +41,11 @@ class Discovery extends Component {
     try {
       await this.discoverMovie()
       await this.getMovieInfo(671)
+      await getUserBoards((userBoards) => {
+        if (userBoards != null) {
+          this.setState({ userBoards: userBoards })
+        }
+      })
     } catch (error) {
       console.log(error)
     }
@@ -68,6 +77,7 @@ class Discovery extends Component {
         },
       })
       const modalInfo = {
+        movieId: id,
         title: movieInfo.data.original_title,
         poster_path: movieInfo.data.poster_path,
         synopsis: movieInfo.data.overview,
@@ -172,11 +182,14 @@ class Discovery extends Component {
       >
         <Header></Header>
         <MovieInfoModal
+          movieId={this.state.modalMovie.movieId ? this.state.modalMovie.movieId : 0}
+          popOver={true}
+          userBoards={this.state.userBoards}
           title={this.state.modalMovie.title}
           posterPath={this.state.modalMovie.poster_path}
           synopsis={this.state.modalMovie.synopsis}
-          addToBoard={() => {
-            console.log('TODO')
+          addToBoard={(boardId, movieId) => {
+            addMovieToBoard(boardId, parseInt(movieId))
           }}
           closeModal={() => {
             this.setState({ modalMovieIsOpen: false })

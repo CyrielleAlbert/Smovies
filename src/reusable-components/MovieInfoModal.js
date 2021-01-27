@@ -1,5 +1,7 @@
 import Modal from 'react-modal'
-export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard, closeModal, isModalOpen, ...props }) {
+import Popover from 'react-awesome-popover'
+
+export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard, closeModal, isModalOpen, movieId = undefined, userBoards = undefined, popOver = false, ...props }) {
   Modal.setAppElement('body')
   return (
     <Modal
@@ -68,7 +70,7 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
           </button>
         </div>
         <div style={{ width: '50%', justifyContent: 'flex-end', display: 'flex' }}>
-          <button
+          {!popOver && <button
             style={{
               backgroundColor: '#D40000',
               borderRadius: 31,
@@ -82,7 +84,51 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
             onClick={addToBoard}
           >
             + Add to board
-          </button>
+          </button>}
+          {popOver &&
+            <Popover
+              placement={"left-center"}
+              arrow={false}>
+              <button
+                style={{
+                  backgroundColor: '#D40000',
+                  borderRadius: 31,
+                  borderWidth: 0,
+                  padding: 10,
+                  fontSize: 20,
+                  color: 'white',
+                  width: '100%',
+                  textAlign: 'center',
+                }}
+              >
+                + Add to board
+              </button>
+              <div style={{
+                backgroundColor: 'white',
+                color: "black",
+                margin: 10,
+                borderRadius: 14,
+                width: 300,
+                padding: 10
+              }}>
+                <div style={{ fontSize: 20, textDecoration: 'black underline', textAlign: 'center' }}> My Boards</div>
+                {Object.keys(userBoards).map((boardId) => {
+                  return (
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      padding: 10,
+                      alignItems: "center",
+                      justifyContent: 'center'
+                    }}>
+                      <div style={{ width: "75%", fontSize: 15 }}>{userBoards[boardId].title}</div>
+                      <div style={{ width: "25%", fontSize: 30, textAlign: "right" }} onClick={()=>{addToBoard(boardId,movieId)}}>
+                        {userBoards[boardId].movies.includes(movieId) ? "✓" : "+"}</div>
+                    </div>
+                  )
+                })}
+              </div>
+            </Popover>}
         </div>
       </div>
     </Modal>
