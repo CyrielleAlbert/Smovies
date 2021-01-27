@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { signin } from '../helpers/auth.js'
+import { signin, sendPasswordReset } from '../helpers/auth.js'
 import { updateUser } from '../helpers/database.js'
 import { auth } from '../services/firebase.js'
+import Modal from 'react-modal'
 
-function utcTimestampToDateString(timestamp){
+
+function utcTimestampToDateString(timestamp) {
   try {
     // Convert to date object.
     const date = new Date(Number(timestamp));
@@ -27,6 +29,8 @@ export default class Login extends Component {
       email: '',
       password: '',
       loading: false,
+      resetEmailSent: false,
+      isModalOpen: false,
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -45,11 +49,23 @@ export default class Login extends Component {
     this.setState({ error: '' })
     try {
       await signin(this.state.email, this.state.password)
-      await updateUser({lastConnection:utcTimestampToDateString(Date.now())})
+      await updateUser({ lastConnection: utcTimestampToDateString(Date.now()) })
     } catch (error) {
       this.setState({ error: error.message })
     }
   }
+  closeModal = () => {
+    this.setState({ isModalOpen: false })
+  }
+  resetPassword = (email) => {
+    sendPasswordReset(email, () => {
+      this.setState({ resetEmailSent: true })
+      //setTimeout(() => { this.setState({ resetEmailSent: false }), 20000 })
+    },
+      (error) => { console.log(error) }
+    )
+  }
+
 
   render() {
     return (
@@ -66,6 +82,91 @@ export default class Login extends Component {
           backgroundRepeat: 'no-repeat',
         }}
       >
+        <Modal
+          isOpen={this.state.isModalOpen}
+          onRequestClose={this.closeModal}
+          style={{
+            overlay: { backgroundColor: 'rgba(65, 65, 65, 0.01)', backdropFilter: 'blur(10px)', },
+            content: {
+              left: null,
+              top: 90,
+              right: null,
+              bottom: null,
+              width: "50%",
+              marginLeft: '25%',
+              backgroundColor: '#DADADA',
+              boxShadow: '0px 0px 45px 25px rgba(0, 0, 0, 0.25)',
+              borderWidth: 0,
+              borderRadius: 24,
+            },
+          }}
+        >
+          <div
+            style={{
+              fontFamily: 'Poppins',
+              color: 'white',
+              textAlign: 'center',
+              padding: 25,
+
+            }}
+          >
+            <div style={{ fontSize: 32, color: "black", textAlign: 'center', fontWeight: "bolder" }}>Reset Password</div>
+            <div style={{ fontSize: 16, color: "black", textAlign: 'center', marginTop: 25 }}>Enter the email address associated with your account.</div>
+            <div>
+              <input
+                style={{
+                  marginTop: 25,
+                  width: '75%',
+                  backgroundColor: 'white',
+                  color: 'black',
+                  fontFamily: 'Poppins',
+                  borderWidth: 0,
+                  borderRadius: 24,
+                  outline: 'none',
+                  padding: 15,
+                }}
+                placeholder="Email"
+                name="email"
+                type="email"
+                onChange={this.handleChange}
+                value={this.state.email}
+              ></input>
+            </div>
+            {!this.state.resetEmailSent &&
+              <div
+                onClick={() => {
+                  if (this.state.email != null) {
+                    this.resetPassword(this.state.email)
+                  } else {
+                    console.log("email null")
+                  }
+                }}
+                style={{
+                  width: '50%',
+                  marginLeft: '25%',
+                  backgroundColor: '#D40000',
+                  fontSize: 20,
+                  borderWidth: 0,
+                  borderRadius: 24,
+                  padding: 5,
+                  marginTop: 50,
+                  marginBottom: 50,
+                  color: 'white',
+                  boxShadow: '0px 0px 10px grey',
+                }}
+              >
+                Reset password
+                    </div>}
+            {this.state.resetEmailSent &&
+              <div style={{
+                color: 'black',
+                fontSize: 15,
+                marginTop: 25,
+              }}>An email has been sent to your email address.</div>}
+            <div style={{ color: "black", textDecoration: "black underline" }} onClick={this.closeModal}>← Back to login</div>
+          </div>
+
+        </Modal>
         <div
           style={{
             color: '#D40000',
@@ -134,28 +235,29 @@ export default class Login extends Component {
                   type="password"
                 ></input>
               </div>
+              <div style={{ textDecoration: "black underline", marginTop:25 }} onClick={() => { this.setState({ isModalOpen: true }) }}>Forgot password?</div>
               <div>
                 {this.state.error ? <p>{this.state.error}</p> : null}
                 {this.state.loading ? (
                   <div marginTop={25}>Loading...</div>
                 ) : (
-                  <button
-                    style={{
-                      width: '20%',
-                      backgroundColor: '#D40000',
-                      fontSize: 30,
-                      borderWidth: 0,
-                      borderRadius: 24,
-                      padding: 5,
-                      marginTop: 25,
-                      marginBottom: 50,
-                      color: 'white',
-                      boxShadow: '0px 0px 10px grey',
-                    }}
-                  >
-                    Log in
-                  </button>
-                )}
+                    <button
+                      style={{
+                        width: '20%',
+                        backgroundColor: '#D40000',
+                        fontSize: 30,
+                        borderWidth: 0,
+                        borderRadius: 24,
+                        padding: 5,
+                        marginTop: 25,
+                        marginBottom: 50,
+                        color: 'white',
+                        boxShadow: '0px 0px 10px grey',
+                      }}
+                    >
+                      Log in
+                    </button>
+                  )}
               </div>
               <p>
                 Don't have an account? <Link to="/signup">Register</Link>
