@@ -5,7 +5,9 @@ import { auth, database } from './../services/firebase.js'
 import Movie from './../reusable-components/MovieView.js'
 import MovieInfoModal from './../reusable-components/MovieInfoModal.js'
 import ReactLoading from 'react-loading'
-import { getUserBoards, addMovieToBoard } from '../helpers/database.js'
+import { getUserBoards, addMovieToBoard, getAllBoards } from '../helpers/database.js'
+import { getBoardPosters } from './../helpers/movieDatabase.js'
+import { NavLink } from 'react-router-dom'
 
 const axios = require('axios')
 
@@ -17,6 +19,8 @@ class Discovery extends Component {
         type: 'movies',
         colors: ['#D40000', '#525252'],
       },
+      allBoardsLoaded: false,
+      allBoards: {},
       loading: false,
       searchText: '',
       loaded: false,
@@ -33,19 +37,41 @@ class Discovery extends Component {
         title: null,
         synopsis: null,
         voteAverage: null,
+        cast: null,
+        productionCompanies: null,
+        productionCountries: null,
+        releaseDate: null,
       },
     }
   }
 
+
+  callback = (dbBoards) => {
+    if (dbBoards != null) {
+      Object.keys(dbBoards).forEach(async (boardId) => {
+        var posters = {}
+        await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
+          posters = posters_path
+          dbBoards[boardId]['posters'] = posters
+          console.log(dbBoards)
+          this.setState({ allBoards: dbBoards, allBoardsLoaded: true })
+        })
+      })
+    } else {
+      this.setState({ allBoards: {}, allBoardsLoaded: true })
+    }
+  }
+
   async componentDidMount() {
+    //getAllBoards(this.callback)
     try {
       await this.discoverMovie()
-      await this.getMovieInfo(671)
       await getUserBoards((userBoards) => {
         if (userBoards != null) {
           this.setState({ userBoards: userBoards })
         }
       })
+
     } catch (error) {
       console.log(error)
     }
@@ -76,12 +102,23 @@ class Discovery extends Component {
           language: 'en_US',
         },
       })
+      const castInfo = await axios.get('https://api.themoviedb.org/3/movie/' + id + '/credits', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+        }
+      })
+      console.log(movieInfo)
       const modalInfo = {
         movieId: id,
         title: movieInfo.data.original_title,
         poster_path: movieInfo.data.poster_path,
         synopsis: movieInfo.data.overview,
         voteAverage: movieInfo.data.vote_average,
+        cast: castInfo.data.cast,
+        productionCompanies: movieInfo.data.production_companies,
+        productionCountries: movieInfo.data.production_countries,
+        releaseDate: movieInfo.data.release_date
       }
       this.setState({ modalMovie: modalInfo })
     } catch (error) {
@@ -182,6 +219,10 @@ class Discovery extends Component {
       >
         <Header></Header>
         <MovieInfoModal
+          cast={this.state.modalMovie.cast}
+          productionCompanies={this.state.modalMovie.productionCompanies}
+          productionCountries={this.state.modalMovie.productionCountries}
+          releaseDate={this.state.modalMovie.releaseDate}
           movieId={this.state.modalMovie.movieId ? this.state.modalMovie.movieId : 0}
           popOver={true}
           userBoards={this.state.userBoards}
@@ -264,6 +305,11 @@ class Discovery extends Component {
             <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
           </div>
         )}
+
+        {/* 
+        * Movies discovery
+        */}
+
         {!this.state.search && this.state.toggleBM.type == "movies" && (
           <div
             style={{
@@ -303,6 +349,36 @@ class Discovery extends Component {
             </div>
           </div>
         )}
+        {!this.state.search && this.state.toggleBM.type != "movies" && 
+          <div>
+            {!this.state.allBoardsLoaded &&
+              <div style={{ paddingLeft: '45%' }}>
+                <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
+              </div>}
+            {this.state.allBoardsLoaded &&
+              Object.keys(this.state.allBoards).map((boardId) => {
+                return (
+                  <NavLink
+                    to={{
+                      pathname: "/board/" + boardId,
+                      aboutProps: { state: { boardInfo: this.state.allBoards[boardId] } }
+                    }}
+
+                    style={{ textDecoration: "none" }}
+                  >
+                    <div style={{
+                      margin: 10,
+                    }} key={boardId}>
+                      <BoardView
+                        name={this.state.allBoards[boardId].title}
+                        nStars={this.state.allBoards[boardId].nStars}
+                        postersPath={this.state.allBoards[boardId].posters}
+                      ></BoardView>
+                    </div>
+                  </NavLink>
+                )
+              })}
+          </div>}
         <div
           style={{
             display: 'flex',

@@ -1,7 +1,8 @@
 import Modal from 'react-modal'
 import Popover from 'react-awesome-popover'
+import ActorView from "./ActorView.js"
 
-export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard, closeModal, isModalOpen, movieId = undefined, userBoards = undefined, popOver = false, ...props }) {
+export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard, closeModal, isModalOpen, cast, productionCompanies, productionCountries, releaseDate, movieId = undefined, userBoards = undefined, popOver = false, ...props }) {
   Modal.setAppElement('body')
   return (
     <Modal
@@ -44,13 +45,45 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
             {title}
           </div>
           <div style={{ fontSize: 15, maxWidth: '80%', marginTop: 20 }}>
-            <div style={{ fontWeight: 'bolder' }}>Synopsis:</div>
+            <div style={{ fontWeight: 'bolder', fontSize: 20 }}>Synopsis:</div>
             {synopsis}
-            <div style={{ fontWeight: 'bolder', marginTop: 20 }}> More information:</div>
-            Not implemented
+            <div style={{ fontWeight: 'bolder', marginTop: 20, fontSize: 20 }}> More information:</div>
+            {productionCompanies != null && <div><div style={{ color: "#8D8D8D" }}>Production: <div style={{ color: "white" }}>{productionCompanies == null ? "" : productionCompanies[0].name}</div> </div>
+              <div style={{ color: "#8D8D8D" }}>Release Date: <div style={{ color: "white" }}>{releaseDate}</div></div></div>}
           </div>
         </div>
       </div>
+      {cast != null &&
+        <div>
+          <div style={{
+            marginTop: 50,
+            fontFamily: "Poppins",
+            fontSize: 15,
+            fontWeight: "bolder",
+            color: "white",
+            paddingLeft: 10
+          }}>Main 5 actors:</div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              flexWrap: 'nowrap',
+              overflowX: 'auto',
+              padding: 10,
+              backgroundColor: '#4D4D4D',
+              marginTop: 10,
+            }}
+          >
+            {cast.slice(0, 5).map((actor) => {
+              return (
+                <div style={{ margin: 10 }}>
+                  <ActorView name={actor.name} posterPath={actor.profile_path}></ActorView>
+                </div>
+              )
+            })}
+          </div>
+        </div>}
       <div style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
         <div style={{ width: '50%' }}>
           <button
@@ -122,7 +155,7 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
                       justifyContent: 'center'
                     }}>
                       <div style={{ width: "75%", fontSize: 15 }}>{userBoards[boardId].title}</div>
-                      <div style={{ width: "25%", fontSize: 30, textAlign: "right" }} onClick={()=>{addToBoard(boardId,movieId)}}>
+                      <div style={{ width: "25%", fontSize: 30, textAlign: "right" }} onClick={() => { addToBoard(boardId, movieId) }}>
                         {userBoards[boardId].movies.includes(movieId) ? "✓" : "+"}</div>
                     </div>
                   )
@@ -131,6 +164,6 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
             </Popover>}
         </div>
       </div>
-    </Modal>
+    </Modal >
   )
 }

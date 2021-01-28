@@ -80,7 +80,7 @@ export default function Header({ ...props }) {
           My Boards
         </NavLink>
       </div>
-      <div
+      {/* <div
         style={{
           width: '20%',
           height: '100%',
@@ -98,8 +98,8 @@ export default function Header({ ...props }) {
         <NavLink to="/MyAccount" style={{ textDecoration: 'none', color: '#414141' }}>
           My Account
         </NavLink>
-      </div>
-      <div style={{ width: '20%', height: '100%', verticalAlign: 'center' }}>
+      </div> */}
+      <div style={{ width: '20%', height: '100%', verticalAlign: 'center', marginLeft:"20%" }}>
         <div
           style={{
             margin: 15,

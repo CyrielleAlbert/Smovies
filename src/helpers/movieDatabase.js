@@ -35,11 +35,21 @@ export async function getMoviesInfo(moviesList){
           language: 'en_US',
         },
       })
+      const castInfo = await axios.get('https://api.themoviedb.org/3/movie/'+movie+'/credits', {
+        params:{
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+        }
+      })
       moviesInfo[movie]= {
         title:movieInfo.data.title,
         vote_average: movieInfo.data.vote_average,
         poster: movieInfo.data.poster_path,
-        synopsis: movieInfo.data.overview
+        synopsis: movieInfo.data.overview,
+        cast: castInfo.data.cast,
+        productionCompanies: movieInfo.data.production_companies,
+        productionCountries: movieInfo.data.production_countries,
+        releaseDate: movieInfo.data.release_date
       }
     } catch(error){
         console.log(error)

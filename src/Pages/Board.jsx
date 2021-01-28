@@ -28,6 +28,10 @@ class Board extends Component {
         synopsis: null,
         voteAverage: null,
         movieId: null,
+        cast: null,
+        productionCompanies:null,
+        productionCountries:null,
+        releaseDate:null,
       },
       searchText: '',
       searchResults: [],
@@ -50,7 +54,6 @@ class Board extends Component {
         var boardPosters = { boardPosters: posters_path }
         this.setState({ boardInfo: { ...this.state.boardInfo, ...boardPosters } })
         getMoviesInfo(movies).then((moviesInfo) => {
-          var moviesInfo = moviesInfo
           this.setState({ moviesInfo: { ...moviesInfo, }, loaded: true })
         })
       })
@@ -130,6 +133,10 @@ class Board extends Component {
       >
         <Header></Header>
         <MovieInfoModal
+          cast={this.state.modalMovieInfo.cast}
+          productionCompanies={this.state.modalMovieInfo.productionCompanies}
+          productionCountries={this.state.modalMovieInfo.productionCountries}
+          releaseDate={this.state.modalMovieInfo.releaseDate}
           title={this.state.modalMovieInfo.title}
           posterPath={this.state.modalMovieInfo.poster}
           synopsis={this.state.modalMovieInfo.synopsis}
@@ -260,9 +267,6 @@ class Board extends Component {
                             textAlign: "center",
                             width: '50%',
                             textDecoration: "white underline"
-
-
-
                           }}
                           onClick={() => { removeMovieFromBoard(this.state.boardId, movieId) }}>
                           Remove

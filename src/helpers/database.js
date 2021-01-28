@@ -16,15 +16,34 @@ function utcTimestampToDateString(timestamp) {
   return undefined;
 }
 
-export async function getAllBoards() {
-  database.ref('boards').on('value', (snapshot) => {
+export async function getAllBoards(callback) {
+  database.ref(`/${"boards"}`).on('value', (snapshot) => {
     let allBoards = []
+    var boardsInfo = {}
+    console.log("hello")
     snapshot.forEach((snap) => {
+      console.log("push")
       allBoards.push(snap.val())
     })
-    return allBoards
+    console.log(allBoards)
+    if (allBoards.length > 1) {
+      for (const boardId of allBoards) {
+        database.ref(`boards/${boardId}`).on('value', (snapshot) => {
+          boardsInfo[boardId] = snapshot.val()
+          if (Object.keys(boardsInfo).length == allBoards.length) {
+            callback(boardsInfo)
+          }
+        })
+      }
+    } else if (allBoards.length == 1) {
+      var boardId = allBoards[0]
+      database.ref(`boards/${boardId}`).on('value', (snapshot) => {
+        callback({ [boardId]: snapshot.val() })
+      })
+    } else {
+      callback(null)
+    }
   })
-  return 0
 }
 
 export async function getUserInfo(callback) {
@@ -116,12 +135,12 @@ export async function addMovieToBoard(boardId, movieId) {
   })
 }
 
-export async function removeMovieFromBoard(boardId,movieId){
+export async function removeMovieFromBoard(boardId, movieId) {
   database.ref(`boards/${boardId}`).on('value', (snapshot) => {
     var movies = [...snapshot.val().movies]
     var moviesTemp = []
     for (var movie of movies) {
-      if (movie != movieId){
+      if (movie != movieId) {
         if (!moviesTemp.includes(movie)) {
           moviesTemp.push(movie)
         }
