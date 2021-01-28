@@ -116,6 +116,21 @@ export async function addMovieToBoard(boardId, movieId) {
   })
 }
 
+export async function removeMovieFromBoard(boardId,movieId){
+  database.ref(`boards/${boardId}`).on('value', (snapshot) => {
+    var movies = [...snapshot.val().movies]
+    var moviesTemp = []
+    for (var movie of movies) {
+      if (movie != movieId){
+        if (!moviesTemp.includes(movie)) {
+          moviesTemp.push(movie)
+        }
+      }
+    }
+    updateBoard(boardId, { movies: moviesTemp, lastUpdate: utcTimestampToDateString(Date.now()) })
+  })
+}
+
 export async function updateUser(updatedValues) {
   var user = auth().currentUser
   database.ref(`users/${user.uid}`).update(updatedValues)

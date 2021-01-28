@@ -6,7 +6,9 @@ import Header from './../reusable-components/Header.js'
 import { auth, database } from './../services/firebase.js'
 import MovieInfoModal from './../reusable-components/MovieInfoModal.js'
 import ReactLoading from 'react-loading'
-import { addMovieToBoard } from '../helpers/database.js'
+import { addMovieToBoard, removeMovieFromBoard } from '../helpers/database.js'
+import Toggle from "react-toggle"
+import "react-toggle/style.css"
 
 const axios = require('axios')
 
@@ -14,6 +16,7 @@ class Board extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      edit: false,
       boardId: null,
       boardInfo: {},
       moviesInfo: {},
@@ -193,12 +196,41 @@ class Board extends Component {
             </div>
             <div>
               <div style={{
-                color: '#8C8C8C',
-                fontFamily: 'Poppins',
-                fontWeight: 'bolder',
-                fontSize: 20,
-                margin: 20
-              }}>Movies</div>
+                display: 'flex',
+                flexDirection: "row"
+              }}>
+                <div style={{
+                  width: "85%",
+                  textAlign: 'left',
+                  color: '#8C8C8C',
+                  fontFamily: 'Poppins',
+                  fontWeight: 'bolder',
+                  fontSize: 20,
+                  margin: 20
+                }}>Movies</div>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: "5%",
+                  color: '#8C8C8C',
+                  fontFamily: 'Poppins',
+                  fontWeight: 'normal',
+                  textDecoration: '#8C8C8C underline',
+                  fontSize: 20,
+                  textAlign: 'right',
+                }}>Edit</div>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: '10%',
+                  textAlign: 'left',
+                }}>
+                  <Toggle
+                    defaultChecked={this.state.edit}
+                    onChange={() => { this.setState({ edit: !this.state.edit }) }}
+                  />
+                </div>
+              </div>
               <div style={{
                 width: 'auto',
                 flexWrap: 'wrap',
@@ -209,12 +241,32 @@ class Board extends Component {
               }}>
                 {Object.keys(this.state.moviesInfo).map((movieId) => {
                   return (
-                    <div style={{ margin: 10 }} onClick={() => this.openModal(movieId, "inBoard")}>
-                      <Movie
-                        title={this.state.moviesInfo[movieId].title}
-                        voteAverage={this.state.moviesInfo[movieId].vote_average}
-                        posterPath={this.state.moviesInfo[movieId].poster}
-                      ></Movie>
+                    <div>
+                      <div style={{ margin: 10 }} onClick={() => this.openModal(movieId, "inBoard")}>
+                        <Movie
+                          title={this.state.moviesInfo[movieId].title}
+                          voteAverage={this.state.moviesInfo[movieId].vote_average}
+                          posterPath={this.state.moviesInfo[movieId].poster}
+                        ></Movie>
+                      </div>
+                      {this.state.edit &&
+                        <div
+                          style={{
+                            margin: 10,
+                            marginLeft: '25%',
+                            color: "white",
+                            fontFamily: 'Poppins',
+                            fontSize: 15,
+                            textAlign: "center",
+                            width: '50%',
+                            textDecoration: "white underline"
+
+
+
+                          }}
+                          onClick={() => { removeMovieFromBoard(this.state.boardId, movieId) }}>
+                          Remove
+                        </div>}
                     </div>
                   )
                 })}
