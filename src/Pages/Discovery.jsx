@@ -30,6 +30,7 @@ class Discovery extends Component {
       search: false,
       searchResults: [],
       discoverMovies: [],
+      searchBoardResults:[],
       modalMovieIsOpen: false,
       modalMovie: {
         movieId: null,
@@ -63,7 +64,7 @@ class Discovery extends Component {
   }
 
   async componentDidMount() {
-    //getAllBoards(this.callback)
+    getAllBoards(this.callback)
     try {
       await this.discoverMovie()
       await getUserBoards((userBoards) => {
@@ -108,7 +109,6 @@ class Discovery extends Component {
           language: 'en_US',
         }
       })
-      console.log(movieInfo)
       const modalInfo = {
         movieId: id,
         title: movieInfo.data.original_title,
@@ -169,6 +169,12 @@ class Discovery extends Component {
       console.log(error)
     }
   }
+  searchBoard = async () => {
+      var results = []
+      
+      this.setState({ loaded: true, searchBoardResults: results, loading: false })
+
+  }
 
   /**
    * Handle the search of movies or boards.
@@ -180,7 +186,7 @@ class Discovery extends Component {
         this.setState({ search: true, loading: true })
         await this.searchMovie()
       } else {
-        //Imp search in Firebase
+        await this.searchBoard()
         this.setState({ loading: true })
         console.log('TODO')
       }
@@ -253,7 +259,6 @@ class Discovery extends Component {
                   display: 'flex',
                   width: 200,
                   height: 30,
-                  backgroundColor: 'yellow',
                   fontSize: 20,
                   fontWeight: 'normal',
                   marginLeft: '5%',
@@ -349,35 +354,56 @@ class Discovery extends Component {
             </div>
           </div>
         )}
-        {!this.state.search && this.state.toggleBM.type != "movies" && 
+        {!this.state.search && this.state.toggleBM.type != "movies" &&
           <div>
-            {!this.state.allBoardsLoaded &&
-              <div style={{ paddingLeft: '45%' }}>
-                <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
-              </div>}
-            {this.state.allBoardsLoaded &&
-              Object.keys(this.state.allBoards).map((boardId) => {
-                return (
-                  <NavLink
-                    to={{
-                      pathname: "/board/" + boardId,
-                      aboutProps: { state: { boardInfo: this.state.allBoards[boardId] } }
-                    }}
+            <div style={{
+              position: 'absolute',
+              top: 178,
+              left: 20,
+              color: '#8C8C8C',
+              fontFamily: 'Poppins',
+              fontWeight: 'bolder',
+              fontSize:20,
 
-                    style={{ textDecoration: "none" }}
-                  >
-                    <div style={{
-                      margin: 10,
-                    }} key={boardId}>
-                      <BoardView
-                        name={this.state.allBoards[boardId].title}
-                        nStars={this.state.allBoards[boardId].nStars}
-                        postersPath={this.state.allBoards[boardId].posters}
-                      ></BoardView>
-                    </div>
-                  </NavLink>
-                )
-              })}
+            }}>All boards</div>
+            <div style={{
+              width: 'auto',
+              flexWrap: 'wrap',
+              display: 'flex',
+              flexDirection: 'row',
+              backgroundColor: '#4D4D4D',
+              padding: 20,
+              marginTop: 50,
+            }}>
+              {!this.state.allBoardsLoaded &&
+                <div style={{ paddingLeft: '45%' }}>
+                  <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
+                </div>}
+              {this.state.allBoardsLoaded &&
+
+                Object.keys(this.state.allBoards).map((boardId) => {
+                  return (
+                    <NavLink
+                      to={{
+                        pathname: "/board/" + boardId,
+                        aboutProps: { state: { boardInfo: this.state.allBoards[boardId] } }
+                      }}
+
+                      style={{ textDecoration: "none" }}
+                    >
+                      <div style={{
+                        margin: 10,
+                      }} key={boardId}>
+                        <BoardView
+                          name={this.state.allBoards[boardId].title}
+                          nStars={this.state.allBoards[boardId].nStars}
+                          postersPath={this.state.allBoards[boardId].posters}
+                        ></BoardView>
+                      </div>
+                    </NavLink>
+                  )
+                })}
+            </div>
           </div>}
         <div
           style={{
