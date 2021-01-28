@@ -17,32 +17,12 @@ function utcTimestampToDateString(timestamp) {
 }
 
 export async function getAllBoards(callback) {
-  database.ref(`/${"boards"}`).on('value', (snapshot) => {
-    let allBoards = []
-    var boardsInfo = {}
-    console.log("hello")
+  database.ref(`boards`).on('value', (snapshot) => {
+    var allBoards={}
     snapshot.forEach((snap) => {
-      console.log("push")
-      allBoards.push(snap.val())
+      allBoards[snap.key]=(snap.val())
     })
-    console.log(allBoards)
-    if (allBoards.length > 1) {
-      for (const boardId of allBoards) {
-        database.ref(`boards/${boardId}`).on('value', (snapshot) => {
-          boardsInfo[boardId] = snapshot.val()
-          if (Object.keys(boardsInfo).length == allBoards.length) {
-            callback(boardsInfo)
-          }
-        })
-      }
-    } else if (allBoards.length == 1) {
-      var boardId = allBoards[0]
-      database.ref(`boards/${boardId}`).on('value', (snapshot) => {
-        callback({ [boardId]: snapshot.val() })
-      })
-    } else {
-      callback(null)
-    }
+    callback(allBoards)
   })
 }
 
