@@ -8,6 +8,7 @@ import ReactLoading from 'react-loading'
 import { getUserBoards, addMovieToBoard, getAllBoards } from '../helpers/database.js'
 import { getBoardPosters } from './../helpers/movieDatabase.js'
 import { NavLink } from 'react-router-dom'
+import { damerauLevenshteinDistance } from '../tools/stringSearch.js'
 
 const axios = require('axios')
 
@@ -30,7 +31,7 @@ class Discovery extends Component {
       search: false,
       searchResults: [],
       discoverMovies: [],
-      searchBoardResults:[],
+      searchBoardResults: [],
       modalMovieIsOpen: false,
       modalMovie: {
         movieId: null,
@@ -54,7 +55,6 @@ class Discovery extends Component {
         await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
           posters = posters_path
           dbBoards[boardId]['posters'] = posters
-          console.log(dbBoards)
           this.setState({ allBoards: dbBoards, allBoardsLoaded: true })
         })
       })
@@ -170,9 +170,22 @@ class Discovery extends Component {
     }
   }
   searchBoard = async () => {
-      var results = []
-      
-      this.setState({ loaded: true, searchBoardResults: results, loading: false })
+    var searchString = this.state.searchText.toLocaleLowerCase('en-US')
+    var results = {}
+    Object.keys(this.state.allBoards).forEach((key) => {
+      var DLdistance = damerauLevenshteinDistance(searchString, this.state.allBoards[key].title)
+      if (this.state.allBoards[key].title.toLocaleLowerCase('en-US').includes(searchString)) {
+        results[key] = { ...this.state.allBoards[key], included: true, DLdistance: DLdistance }
+      }else if (searchString.includes(this.state.allBoards[key].title.toLocaleLowerCase('en-US'))) {
+          results[key] = { ...this.state.allBoards[key], included: true, DLdistance: DLdistance }
+      } else {
+        if (DLdistance < 5) {
+          results[key] = { ...this.state.allBoards[key], included: false, DLdistance: DLdistance }
+        }
+      }
+    })
+    console.log(results)
+    this.setState({ loaded: true, searchBoardResults: results, loading: false })
 
   }
 
@@ -186,9 +199,8 @@ class Discovery extends Component {
         this.setState({ search: true, loading: true })
         await this.searchMovie()
       } else {
+        this.setState({ search: true, loading: true })
         await this.searchBoard()
-        this.setState({ loading: true })
-        console.log('TODO')
       }
     }
   }
@@ -354,6 +366,11 @@ class Discovery extends Component {
             </div>
           </div>
         )}
+
+        {/*
+        * Board discovery
+        */}
+
         {!this.state.search && this.state.toggleBM.type != "movies" &&
           <div>
             <div style={{
@@ -363,7 +380,7 @@ class Discovery extends Component {
               color: '#8C8C8C',
               fontFamily: 'Poppins',
               fontWeight: 'bolder',
-              fontSize:20,
+              fontSize: 20,
 
             }}>All boards</div>
             <div style={{
@@ -405,6 +422,8 @@ class Discovery extends Component {
                 })}
             </div>
           </div>}
+
+
         <div
           style={{
             display: 'flex',
@@ -420,8 +439,10 @@ class Discovery extends Component {
           {!this.state.loading &&
             this.state.search &&
             this.state.loaded &&
+            this.state.toggleBM.type == "movies" &&
             this.state.searchResults.length > 0 &&
             this.state.searchResults.map((movie, index) => {
+              console.log("hello")
               return (
                 <div style={{ margin: 10 }} onClick={() => this.openModal(movie.id)}>
                   <Movie
@@ -433,26 +454,36 @@ class Discovery extends Component {
               )
             })
           }
+
           {!this.state.loading &&
             this.state.search &&
             this.state.loaded &&
-            this.state.searchResults.length > 0 &&
-            < div
-              style={{
-                position: 'absolute',
-                top: 178,
-                left: 20,
-                color: '#8C8C8C',
-                fontFamily: 'Poppins',
-                fontWeight: 'bolder',
-                fontSize: 20,
-              }}
-            >
-              Search results
-            </div>
-          }
-        </div>
-      </div >
+            this.state.toggleBM.type != "movies" &&
+            Object.keys(this.state.searchBoardResults).length > 0 &&
+            Object.keys(this.state.searchBoardResults).map((boardId, index) => {
+              return (
+                <NavLink
+                  to={{
+                    pathname: "/board/" + boardId,
+                    aboutProps: { state: { boardInfo: this.state.searchBoardResults[boardId] } }
+                  }}
+
+                  style={{ textDecoration: "none" }}
+                >
+                  <div style={{
+                    margin: 10,
+                  }} key={boardId}>
+                    <BoardView
+                      name={this.state.searchBoardResults[boardId].title}
+                      nStars={this.state.searchBoardResults[boardId].nStars}
+                      postersPath={this.state.searchBoardResults[boardId].posters}
+                    ></BoardView>
+                  </div>
+                </NavLink>
+              )
+            })}
+        </div >
+      </div>
     )
   }
 }
