@@ -30,7 +30,7 @@ class Discovery extends Component {
       userBoards: {},
       search: false,
       searchResults: [],
-      discoverMovies: [],
+      discoverMovies: {},
       searchBoardResults: [],
       modalMovieIsOpen: false,
       modalMovie: {
@@ -128,17 +128,122 @@ class Discovery extends Component {
 
   discoverMovie = async () => {
     try {
-      const movies = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+      const weeklyTrend = await axios.get('https://api.themoviedb.org/3/trending/movie/week', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Movies of the week': weeklyTrend.data.results } })
+      const dailyTrend = await axios.get('https://api.themoviedb.org/3/trending/movie/day', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Movies of the day': dailyTrend.data.results } })
+
+      const movies2020 = await axios.get('https://api.themoviedb.org/3/discover/movie', {
         params: {
           api_key: process.env.REACT_APP_MOVIES_API_KEY,
           language: 'en_US',
           sort_by: 'popularity.desc',
           include_adult: false,
           include_video: false,
-          year: 2019,
+          year: 2020,
         },
       })
-      this.setState({ discoverMovies: movies.data.results })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, "Best of 2020": movies2020.data.results } })
+      const popular = await axios.get('https://api.themoviedb.org/3/movie/popular', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Popular': popular.data.results } })
+      const topRated = await axios.get('https://api.themoviedb.org/3/movie/top_rated', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Top rated': topRated.data.results } })
+      const upcoming = await axios.get('https://api.themoviedb.org/3/movie/upcoming', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Recent': upcoming.data.results } })
+      const actionMovies = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+          sort_by: 'vote_count.desc',
+          include_video: false,
+          with_genres: 28
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Action': actionMovies.data.results } })
+      const adventureMovies = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+          sort_by: 'vote_count.desc',
+          include_video: false,
+          with_genres: 12
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Adventure': adventureMovies.data.results } })
+      const comedyMovies = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+          sort_by: 'vote_count.desc',
+          include_video: false,
+          with_genres: 35
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Comedy': comedyMovies.data.results } })
+      const crimeMovies = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+          sort_by: 'vote_count.desc',
+          include_video: false,
+          with_genres: 80
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Crime': crimeMovies.data.results } })
+      const westernMovies = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+          sort_by: 'vote_count.desc',
+          include_video: false,
+          with_genres: 37
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Western': westernMovies.data.results } })
+      const scifiMovies = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+          sort_by: 'popularity.desc',
+          include_video: false,
+          with_genres: 878
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'Science fiction': scifiMovies.data.results } })
+      const historyMovies = await axios.get('https://api.themoviedb.org/3/discover/movie', {
+        params: {
+          api_key: process.env.REACT_APP_MOVIES_API_KEY,
+          language: 'en_US',
+          sort_by: 'popularity.desc',
+          include_video: false,
+          with_genres: 36
+        },
+      })
+      this.setState({ discoverMovies: { ...this.state.discoverMovies, 'History': historyMovies.data.results } })
+
     } catch (error) {
       console.log(error)
     }
@@ -176,8 +281,8 @@ class Discovery extends Component {
       var DLdistance = damerauLevenshteinDistance(searchString, this.state.allBoards[key].title)
       if (this.state.allBoards[key].title.toLocaleLowerCase('en-US').includes(searchString)) {
         results[key] = { ...this.state.allBoards[key], included: true, DLdistance: DLdistance }
-      }else if (searchString.includes(this.state.allBoards[key].title.toLocaleLowerCase('en-US'))) {
-          results[key] = { ...this.state.allBoards[key], included: true, DLdistance: DLdistance }
+      } else if (searchString.includes(this.state.allBoards[key].title.toLocaleLowerCase('en-US'))) {
+        results[key] = { ...this.state.allBoards[key], included: true, DLdistance: DLdistance }
       } else {
         if (DLdistance < 5) {
           results[key] = { ...this.state.allBoards[key], included: false, DLdistance: DLdistance }
@@ -327,45 +432,49 @@ class Discovery extends Component {
         * Movies discovery
         */}
 
-        {!this.state.search && this.state.toggleBM.type == "movies" && (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              flexWrap: 'nowrap',
-              overflowX: 'auto',
-              padding: 10,
-              backgroundColor: '#4D4D4D',
-              marginTop: 50,
-            }}
-          >
-            {this.state.discoverMovies.map((movie, index) => {
-              return (
-                <div style={{ margin: 10 }} onClick={() => this.openModal(movie.id)}>
-                  <Movie
-                    title={movie.title}
-                    voteAverage={movie.vote_average}
-                    posterPath={movie.poster_path}
-                  ></Movie>
+        {!this.state.search && this.state.toggleBM.type == "movies" &&
+          Object.keys(this.state.discoverMovies).map((category, i) => {
+            return (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  flexWrap: 'nowrap',
+                  overflowX: 'auto',
+                  padding: 10,
+                  backgroundColor: '#4D4D4D',
+                  marginTop: 50,
+                }}
+              >
+                {this.state.discoverMovies[category].map((movie, index) => {
+                  return (
+                    <div style={{ margin: 10 }} onClick={() => this.openModal(movie.id)}>
+                      <Movie
+                        title={movie.title}
+                        voteAverage={movie.vote_average}
+                        posterPath={movie.poster_path}
+                      ></Movie>
+                    </div>
+                  )
+                })}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 178 + i * 316,
+                    left: 20,
+                    color: '#8C8C8C',
+                    fontFamily: 'Poppins',
+                    fontWeight: 'bolder',
+                    fontSize: 20,
+                  }}
+                >
+                  {category}
                 </div>
-              )
-            })}
-            <div
-              style={{
-                position: 'absolute',
-                top: 178,
-                left: 20,
-                color: '#8C8C8C',
-                fontFamily: 'Poppins',
-                fontWeight: 'bolder',
-                fontSize: 20,
-              }}
-            >
-              Best of 2019
-            </div>
-          </div>
-        )}
+              </div>
+            )
+          })}
+
 
         {/*
         * Board discovery
