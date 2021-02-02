@@ -179,7 +179,7 @@ class Board extends Component {
                 <BoardView
                   name={this.state.boardInfo.title}
                   nStars={this.state.boardInfo.nStars}
-                  postersPath={this.state.boardInfo.boardPosters}
+                  postersPath={this.state.boardInfo.boardPosters != undefined?this.state.boardInfo.boardPosters:[null,null,null,null]}
                   hideBanner={true}
                   width={156 * 2}
                   height={210 * 2}

@@ -6,6 +6,9 @@
 
 export default function BoardView({ name, nStars, postersPath, hideBanner = false, ...props }) {
   if (postersPath != undefined) {
+    while (postersPath.length<4){
+      postersPath.push(null)
+    }
     return (
       <div
         style={{
