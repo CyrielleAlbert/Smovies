@@ -52,11 +52,16 @@ class Discovery extends Component {
     if (dbBoards != null) {
       Object.keys(dbBoards).forEach(async (boardId) => {
         var posters = {}
-        await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
-          posters = posters_path
-          dbBoards[boardId]['posters'] = posters
-          this.setState({ allBoards: dbBoards, allBoardsLoaded: true })
-        })
+        if (dbBoards[boardId].movies != undefined) {
+          await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
+            posters = posters_path
+            dbBoards[boardId]['posters'] = posters
+            this.setState({ allBoards: dbBoards , allBoardsLoaded:true})
+          })
+        } else {
+          dbBoards[boardId]['posters'] = []
+          this.setState({ allBoards: dbBoards })
+        }
       })
     } else {
       this.setState({ allBoards: {}, allBoardsLoaded: true })
@@ -438,6 +443,8 @@ class Discovery extends Component {
               <div>
                 <div
                   style={{
+                    marginTop: 50,
+                    marginLeft:10,
                     color: '#8C8C8C',
                     fontFamily: 'Poppins',
                     fontWeight: 'bolder',
@@ -455,7 +462,6 @@ class Discovery extends Component {
                     overflowX: 'auto',
                     padding: 10,
                     backgroundColor: '#4D4D4D',
-                    marginTop: 50,
                   }}
                 >
                   {this.state.discoverMovies[category].map((movie, index) => {
