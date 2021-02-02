@@ -9,9 +9,10 @@ class Home extends Component {
     return (
       <div
         style={{
-          backgroundColor: '#414141',
+          backgroundColor: 'black',
           position: 'relative',
           width: '100%',
+          minHeight:window.innerHeight,
           fontFamily: 'Poppins',
           backgroundImage: 'url(' + '/cinema.jpg' + ')',
           backgroundPosition: 'center',

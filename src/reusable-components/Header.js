@@ -32,17 +32,9 @@ export default function Header({ ...props }) {
           flexDirection: 'column',
         }}
       >
-        <div>Smovies</div>
-        <div
-          style={{
-            marginTop: -15,
-            color: '#414141',
-            fontSize: 20,
-            fontWeight: 'normal',
-          }}
-        >
-          Feed
-        </div>
+        <NavLink to="/feed" style={{ textDecoration: 'none', color: '#D40000' }}>
+          <div>Smovies</div>
+        </NavLink>
       </div>
       <div
         style={{
@@ -99,7 +91,7 @@ export default function Header({ ...props }) {
           My Account
         </NavLink>
       </div> */}
-      <div style={{ width: '20%', height: '100%', verticalAlign: 'center', marginLeft:"20%" }}>
+      <div style={{ width: '20%', height: '100%', verticalAlign: 'center', marginLeft: '20%' }}>
         <div
           style={{
             margin: 15,
@@ -110,7 +102,7 @@ export default function Header({ ...props }) {
             color: 'white',
             fontSize: 15,
             textAlign: 'center',
-            borderRadius: 93
+            borderRadius: 93,
           }}
           onClick={logout}
         >
