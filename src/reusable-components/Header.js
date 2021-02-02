@@ -3,8 +3,6 @@ import { NavLink } from 'react-router-dom'
 import { logout } from './../helpers/auth.js'
 
 export default function Header({ ...props }) {
-  const userId = '@Cyrialkiller'
-  const pictureLink = '/cyriProfilePic.jpg'
   return (
     <div
       style={{

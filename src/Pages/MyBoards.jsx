@@ -8,8 +8,6 @@ import CreateBoardModal from "./../reusable-components/CreateBoardModal.js"
 import { NavLink } from 'react-router-dom'
 import ReactLoading from 'react-loading'
 
-const axios = require('axios')
-
 class MyBoards extends Component {
   constructor(props) {
     super(props)

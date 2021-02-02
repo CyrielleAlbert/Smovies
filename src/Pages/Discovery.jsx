@@ -1,7 +1,7 @@
-import React, { Component, useEffect } from 'react'
+import React, { Component } from 'react'
 import Header from './../reusable-components/Header.js'
 import BoardView from '../reusable-components/BoardView.js'
-import { auth, database } from './../services/firebase.js'
+import { auth} from './../services/firebase.js'
 import Movie from './../reusable-components/MovieView.js'
 import MovieInfoModal from './../reusable-components/MovieInfoModal.js'
 import ReactLoading from 'react-loading'
@@ -300,7 +300,7 @@ class Discovery extends Component {
    */
   handleSearch = async (event) => {
     if (event.key === 'Enter') {
-      if (this.state.toggleBM.type == 'movies') {
+      if (this.state.toggleBM.type === 'movies') {
         this.setState({ search: true, loading: true })
         await this.searchMovie()
       } else {
@@ -314,7 +314,7 @@ class Discovery extends Component {
    * Change between type of discovery
    */
   toggleBoardsMovies = () => {
-    if (this.state.toggleBM.type == 'movies') {
+    if (this.state.toggleBM.type === 'movies') {
       this.setState({
         toggleBM: {
           type: 'boards',
@@ -432,7 +432,7 @@ class Discovery extends Component {
         * Movies discovery
         */}
 
-        {!this.state.search && this.state.toggleBM.type == "movies" &&
+        {!this.state.search && this.state.toggleBM.type === "movies" &&
           Object.keys(this.state.discoverMovies).map((category, i) => {
             return (
               <div
@@ -461,7 +461,7 @@ class Discovery extends Component {
                 <div
                   style={{
                     position: 'absolute',
-                    top: 178 + i * 316,
+                    top: 178 + i * 315,
                     left: 20,
                     color: '#8C8C8C',
                     fontFamily: 'Poppins',
@@ -480,7 +480,7 @@ class Discovery extends Component {
         * Board discovery
         */}
 
-        {!this.state.search && this.state.toggleBM.type != "movies" &&
+        {!this.state.search && this.state.toggleBM.type !== "movies" &&
           <div>
             <div style={{
               position: 'absolute',
@@ -548,7 +548,7 @@ class Discovery extends Component {
           {!this.state.loading &&
             this.state.search &&
             this.state.loaded &&
-            this.state.toggleBM.type == "movies" &&
+            this.state.toggleBM.type === "movies" &&
             this.state.searchResults.length > 0 &&
             this.state.searchResults.map((movie, index) => {
               console.log("hello")
@@ -567,7 +567,7 @@ class Discovery extends Component {
           {!this.state.loading &&
             this.state.search &&
             this.state.loaded &&
-            this.state.toggleBM.type != "movies" &&
+            this.state.toggleBM.type !== "movies" &&
             Object.keys(this.state.searchBoardResults).length > 0 &&
             Object.keys(this.state.searchBoardResults).map((boardId, index) => {
               return (

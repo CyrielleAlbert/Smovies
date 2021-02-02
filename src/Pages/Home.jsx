@@ -2,9 +2,7 @@ import React, { Component } from 'react'
 import { NavLink } from 'react-router-dom'
 
 class Home extends Component {
-  constructor(props) {
-    super(props)
-  }
+
   render() {
     return (
       <div
@@ -14,7 +12,7 @@ class Home extends Component {
           width: '100%',
           minHeight:window.innerHeight,
           fontFamily: 'Poppins',
-          backgroundImage: 'url(' + '/cinema.jpg' + ')',
+          backgroundImage: 'url(/cinema.jpg)',
           backgroundPosition: 'center',
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',

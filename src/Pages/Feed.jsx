@@ -2,10 +2,7 @@ import React, { Component } from 'react'
 import Header from '../reusable-components/Header.js'
 import {NavLink} from "react-router-dom"
 class Feed extends Component {
-  constructor(props) {
-    super(props)
-  }
-  componentDidMount() { }
+
   render() {
     return (
       <div
@@ -51,6 +48,7 @@ class Feed extends Component {
               <div style={{ fontSize: 15, paddingTop: 20, paddingBottom: 20 }}>
                 <li>Suggestions based on boards created by the community & movies you like</li>
                 <li>Social network functionalities (Followers/Following, Feed, Share options) </li>
+                <li>Functionality to star boards</li>
                 <li>... & more depending on what you want</li>
               </div>
               🎥 How to start?
