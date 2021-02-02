@@ -152,7 +152,6 @@ class MyBoards extends Component {
               My boards
             </div>
           </div>
-          My Boards is coming in the next update...
         </div>
       </div>
     )
