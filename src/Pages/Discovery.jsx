@@ -443,6 +443,8 @@ class Discovery extends Component {
               <div>
                 <div
                   style={{
+                    marginTop: 50,
+                    marginLeft:10,
                     color: '#8C8C8C',
                     fontFamily: 'Poppins',
                     fontWeight: 'bolder',
@@ -460,7 +462,6 @@ class Discovery extends Component {
                     overflowX: 'auto',
                     padding: 10,
                     backgroundColor: '#4D4D4D',
-                    marginTop: 50,
                   }}
                 >
                   {this.state.discoverMovies[category].map((movie, index) => {
