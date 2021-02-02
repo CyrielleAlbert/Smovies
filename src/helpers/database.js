@@ -18,9 +18,9 @@ function utcTimestampToDateString(timestamp) {
 
 export async function getAllBoards(callback) {
   database.ref(`boards`).on('value', (snapshot) => {
-    var allBoards={}
+    var allBoards = {}
     snapshot.forEach((snap) => {
-      allBoards[snap.key]=(snap.val())
+      allBoards[snap.key] = (snap.val())
     })
     callback(allBoards)
   })
@@ -104,12 +104,16 @@ export async function updateBoard(boardId, updatedValues) {
 
 export async function addMovieToBoard(boardId, movieId) {
   database.ref(`boards/${boardId}`).on('value', (snapshot) => {
-    var movies = [...snapshot.val().movies, movieId]
     var moviesTemp = []
-    for (var movie of movies) {
-      if (!moviesTemp.includes(movie)) {
-        moviesTemp.push(movie)
+    if (snapshot.val().movies != undefined) {
+      var movies = [...snapshot.val().movies, movieId]
+      for (var movie of movies) {
+        if (!moviesTemp.includes(movie)) {
+          moviesTemp.push(movie)
+        }
       }
+    }else {
+      moviesTemp = [movieId]
     }
     updateBoard(boardId, { movies: moviesTemp, lastUpdate: utcTimestampToDateString(Date.now()) })
   })

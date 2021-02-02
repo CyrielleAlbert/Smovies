@@ -52,11 +52,16 @@ class Discovery extends Component {
     if (dbBoards != null) {
       Object.keys(dbBoards).forEach(async (boardId) => {
         var posters = {}
-        await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
-          posters = posters_path
-          dbBoards[boardId]['posters'] = posters
-          this.setState({ allBoards: dbBoards, allBoardsLoaded: true })
-        })
+        if (dbBoards[boardId].movies != undefined) {
+          await getBoardPosters(dbBoards[boardId].movies).then((posters_path) => {
+            posters = posters_path
+            dbBoards[boardId]['posters'] = posters
+            this.setState({ allBoards: dbBoards , allBoardsLoaded:true})
+          })
+        } else {
+          dbBoards[boardId]['posters'] = []
+          this.setState({ allBoards: dbBoards })
+        }
       })
     } else {
       this.setState({ allBoards: {}, allBoardsLoaded: true })

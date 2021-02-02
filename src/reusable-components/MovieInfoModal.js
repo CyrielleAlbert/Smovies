@@ -146,7 +146,6 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
               }}>
                 <div style={{ fontSize: 20, textDecoration: 'black underline', textAlign: 'center' }}> My Boards</div>
                 {Object.keys(userBoards).map((boardId) => {
-                  console.log(userBoards[boardId].movies)
                   return (
                     <div style={{
                       display: 'flex',

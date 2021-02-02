@@ -29,9 +29,9 @@ class Board extends Component {
         voteAverage: null,
         movieId: null,
         cast: null,
-        productionCompanies:null,
-        productionCountries:null,
-        releaseDate:null,
+        productionCompanies: null,
+        productionCountries: null,
+        releaseDate: null,
       },
       searchText: '',
       searchResults: [],
@@ -50,13 +50,18 @@ class Board extends Component {
     database.ref(`boards/${this.props.match.params.id}`).on('value', (snapshot) => {
       this.setState({ boardInfo: snapshot.val() })
       var movies = snapshot.val().movies
-      getBoardPosters(movies).then((posters_path) => {
-        var boardPosters = { boardPosters: posters_path }
-        this.setState({ boardInfo: { ...this.state.boardInfo, ...boardPosters } })
-        getMoviesInfo(movies).then((moviesInfo) => {
-          this.setState({ moviesInfo: { ...moviesInfo, }, loaded: true })
+      if (movies != undefined) {
+        getBoardPosters(movies).then((posters_path) => {
+          var boardPosters = { boardPosters: posters_path }
+          this.setState({ boardInfo: { ...this.state.boardInfo, ...boardPosters } })
+          getMoviesInfo(movies).then((moviesInfo) => {
+            this.setState({ moviesInfo: { ...moviesInfo, }, loaded: true })
+          })
         })
-      })
+      } else {
+        console.log("hello")
+        this.setState({ moviesInfo: {}, loaded: true })
+      }
     })
   }
 
@@ -109,12 +114,17 @@ class Board extends Component {
 
   addMovie = (movieId) => {
     if (movieId != null) {
-      if (this.state.boardInfo.movies.includes(movieId)) {
-        console.log("Already in the list")
-        this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
-      } else {
+      if (this.state.boardInfo.movies != undefined) {
+        if (this.state.boardInfo.movies.includes(movieId)) {
+          console.log("Already in the list")
+          this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
+        } else {
+          addMovieToBoard(this.props.match.params.id, movieId)
+          console.log("Added to the list!")
+          this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
+        }
+      }else{
         addMovieToBoard(this.props.match.params.id, movieId)
-        console.log("Added to the list!")
         this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
       }
     } else {
@@ -195,7 +205,7 @@ class Board extends Component {
                 }}>Created by: user#{this.state.boardInfo.createdBy.slice(-5)}</div>
                 <div style={{ height: 250, width: '100%', color: '#7C7C7C', paddingTop: 20 }}>Description not available</div>
                 <div style={{ flexDirection: 'row', display: 'flex', }}>
-                  <div style={{ width: '15%' }}>{this.state.boardInfo.movies.length} movies </div>
+                  <div style={{ width: '15%' }}>{this.state.boardInfo.movies != undefined ? this.state.boardInfo.movies.length : 0} movies </div>
                   <div style={{ width: '15%' }}>{this.state.boardInfo.nStars} stars </div>
                   <div style={{ width: '20%' }}> Last update: {("0" + new Date(this.state.boardInfo.lastUpdate).getDate()).slice(-2)}/{("0" + new Date(this.state.boardInfo.lastUpdate).getMonth() + 1).slice(-2)}/{new Date(this.state.boardInfo.lastUpdate).getFullYear()}</div>
                 </div>
