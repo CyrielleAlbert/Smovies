@@ -62,7 +62,7 @@ class Feed extends Component {
               <div style={{ fontSize: 15, paddingTop: 20, paddingBottom: 20 }}>
                 <li>Send us any feedback at Cyriellealbert@yahoo.fr</li>
                 <li>Go to <a href="https://github.com/CyrielleAlbert/Smovies" style={{ color: "white" }}>Github</a> & create a pull request if you want to implement something.</li>
-                <li>Share it with your friends to grow the community</li>
+                <li>Share it with your friends to expand the community</li>
               </div>
             </div>
 
