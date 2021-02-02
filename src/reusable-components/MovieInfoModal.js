@@ -146,6 +146,7 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
               }}>
                 <div style={{ fontSize: 20, textDecoration: 'black underline', textAlign: 'center' }}> My Boards</div>
                 {Object.keys(userBoards).map((boardId) => {
+                  console.log(userBoards[boardId].movies)
                   return (
                     <div style={{
                       display: 'flex',
@@ -155,8 +156,12 @@ export default function MovieInfoModal({ title, synopsis, posterPath, addToBoard
                       justifyContent: 'center'
                     }}>
                       <div style={{ width: "75%", fontSize: 15 }}>{userBoards[boardId].title}</div>
+                      {userBoards[boardId].movies !== undefined &&
                       <div style={{ width: "25%", fontSize: 30, textAlign: "right" }} onClick={() => { addToBoard(boardId, movieId) }}>
-                        {userBoards[boardId].movies.includes(movieId) ? "✓" : "+"}</div>
+                        {userBoards[boardId].movies.includes(movieId) ? "✓" : "+"}</div>}
+                      {userBoards[boardId].movies === undefined &&
+                      <div style={{ width: "25%", fontSize: 30, textAlign: "right" }} onClick={() => { addToBoard(boardId, movieId) }}>
+                        {"+"}</div>}
                     </div>
                   )
                 })}
