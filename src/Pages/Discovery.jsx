@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Header from './../reusable-components/Header.js'
 import BoardView from '../reusable-components/BoardView.js'
-import { auth} from './../services/firebase.js'
+import { auth } from './../services/firebase.js'
 import Movie from './../reusable-components/MovieView.js'
 import MovieInfoModal from './../reusable-components/MovieInfoModal.js'
 import ReactLoading from 'react-loading'
@@ -435,34 +435,9 @@ class Discovery extends Component {
         {!this.state.search && this.state.toggleBM.type === "movies" &&
           Object.keys(this.state.discoverMovies).map((category, i) => {
             return (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  flexWrap: 'nowrap',
-                  overflowX: 'auto',
-                  padding: 10,
-                  backgroundColor: '#4D4D4D',
-                  marginTop: 50,
-                }}
-              >
-                {this.state.discoverMovies[category].map((movie, index) => {
-                  return (
-                    <div style={{ margin: 10 }} onClick={() => this.openModal(movie.id)}>
-                      <Movie
-                        title={movie.title}
-                        voteAverage={movie.vote_average}
-                        posterPath={movie.poster_path}
-                      ></Movie>
-                    </div>
-                  )
-                })}
+              <div>
                 <div
                   style={{
-                    position: 'absolute',
-                    top: 178 + i * 315,
-                    left: 20,
                     color: '#8C8C8C',
                     fontFamily: 'Poppins',
                     fontWeight: 'bolder',
@@ -471,9 +446,34 @@ class Discovery extends Component {
                 >
                   {category}
                 </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    padding: 10,
+                    backgroundColor: '#4D4D4D',
+                    marginTop: 50,
+                  }}
+                >
+                  {this.state.discoverMovies[category].map((movie, index) => {
+                    return (
+                      <div style={{ margin: 10 }} onClick={() => this.openModal(movie.id)}>
+                        <Movie
+                          title={movie.title}
+                          voteAverage={movie.vote_average}
+                          posterPath={movie.poster_path}
+                        ></Movie>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             )
           })}
+
 
 
         {/*

@@ -182,6 +182,7 @@ const CreateBoardModal = ({ closeModal, isModalOpen, ...props }) => {
                 width: '50%',
                 textAlign: 'center',
               }}
+              disabled={movies.length<1}
               onClick={() => {
                 if (name != null) {
                   createBoard({ moviesId: movies, title: name, })
