@@ -113,26 +113,32 @@ class Board extends Component {
   }
 
   addMovie = (movieId) => {
-    if (movieId != null) {
-      if (this.state.boardInfo.movies != undefined) {
-        if (this.state.boardInfo.movies.includes(movieId)) {
-          console.log("Already in the list")
-          this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
+    if (this.state.boardInfo.createdBy === auth().currentUser.uid) {
+      if (movieId != null) {
+        if (this.state.boardInfo.movies != undefined) {
+          if (this.state.boardInfo.movies.includes(movieId)) {
+            console.log("Already in the list")
+            this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
+          } else {
+            addMovieToBoard(this.props.match.params.id, movieId)
+            console.log("Added to the list!")
+            this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
+          }
         } else {
           addMovieToBoard(this.props.match.params.id, movieId)
-          console.log("Added to the list!")
           this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
         }
-      }else{
-        addMovieToBoard(this.props.match.params.id, movieId)
-        this.setState({ searchResultsAdded: { ...this.state.searchResultsAdded, [movieId]: true } })
+      } else {
+        console.log('MovieId null')
       }
     } else {
-      console.log('MovieId null')
+      console.log("Not your board")
     }
   }
 
   render() {
+    console.log(this.state.boardInfo.createdBy, auth().currentUser.uid)
+
     return (
       <div
         style={{
@@ -179,7 +185,7 @@ class Board extends Component {
                 <BoardView
                   name={this.state.boardInfo.title}
                   nStars={this.state.boardInfo.nStars}
-                  postersPath={this.state.boardInfo.boardPosters != undefined?this.state.boardInfo.boardPosters:[null,null,null,null]}
+                  postersPath={this.state.boardInfo.boardPosters != undefined ? this.state.boardInfo.boardPosters : [null, null, null, null]}
                   hideBanner={true}
                   width={156 * 2}
                   height={210 * 2}
@@ -225,28 +231,30 @@ class Board extends Component {
                   fontSize: 20,
                   margin: 20
                 }}>Movies</div>
+                {this.state.boardInfo.createdBy === auth().currentUser.uid
+                  && <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "5%",
+                    color: '#8C8C8C',
+                    fontFamily: 'Poppins',
+                    fontWeight: 'normal',
+                    textDecoration: '#8C8C8C underline',
+                    fontSize: 20,
+                    textAlign: 'right',
+                  }}>Edit
                 <div style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "5%",
-                  color: '#8C8C8C',
-                  fontFamily: 'Poppins',
-                  fontWeight: 'normal',
-                  textDecoration: '#8C8C8C underline',
-                  fontSize: 20,
-                  textAlign: 'right',
-                }}>Edit</div>
-                <div style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: '10%',
-                  textAlign: 'left',
-                }}>
-                  <Toggle
-                    defaultChecked={this.state.edit}
-                    onChange={() => { this.setState({ edit: !this.state.edit }) }}
-                  />
-                </div>
+                      display: "flex",
+                      alignItems: "center",
+                      width: '10%',
+                      textAlign: 'left',
+                    }}>
+
+                      <Toggle
+                        defaultChecked={this.state.edit}
+                        onChange={() => { this.setState({ edit: !this.state.edit }) }}
+                      /></div>
+                  </div>}
               </div>
               <div style={{
                 width: 'auto',
@@ -286,100 +294,101 @@ class Board extends Component {
                 })}
               </div>
             </div>
-            <div>
-              <div style={{ display: 'flex', flexDirection: 'row', marginTop: 50 }}>
-                <div style={{
-                  width: 1200,
-                  color: '#8C8C8C',
-                  fontFamily: 'Poppins',
-                  fontWeight: 'bolder',
-                  fontSize: 20,
-                  margin: 20,
-                  marginBottom: 0
-                }}>Add to the board: </div>
-                <div style={{
-                  width: 200,
-                  margin: 20,
-                  marginBottom: 0
-                }}>
-                  <input
-                    style={{
-                      backgroundColor: '#525252',
-                      color: 'white',
-                      fontFamily: 'Poppins',
-                      borderWidth: 0,
-                      borderRadius: 24,
-                      outline: 'none',
-                      padding: 5,
-                    }}
-                    type="text"
-                    placeholder="Search"
-                    value={this.state.searchText}
-                    onChange={this.changeSearch}
-                    onKeyDown={this.handleSearch}
-                  />
+            {this.state.boardInfo.createdBy === auth().currentUser.uid &&
+              <div>
+                <div style={{ display: 'flex', flexDirection: 'row', marginTop: 50 }}>
+                  <div style={{
+                    width: 1200,
+                    color: '#8C8C8C',
+                    fontFamily: 'Poppins',
+                    fontWeight: 'bolder',
+                    fontSize: 20,
+                    margin: 20,
+                    marginBottom: 0
+                  }}>Add to the board: </div>
+                  <div style={{
+                    width: 200,
+                    margin: 20,
+                    marginBottom: 0
+                  }}>
+                    <input
+                      style={{
+                        backgroundColor: '#525252',
+                        color: 'white',
+                        fontFamily: 'Poppins',
+                        borderWidth: 0,
+                        borderRadius: 24,
+                        outline: 'none',
+                        padding: 5,
+                      }}
+                      type="text"
+                      placeholder="Search"
+                      value={this.state.searchText}
+                      onChange={this.changeSearch}
+                      onKeyDown={this.handleSearch}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {this.state.searchLoading && (
-                <div style={{ paddingLeft: '45%' }}>
-                  <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
+                {this.state.searchLoading && (
+                  <div style={{ paddingLeft: '45%' }}>
+                    <ReactLoading type={'bubbles'} color="white" height={'10%'} width={'10%'} />
+                  </div>
+                )}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    padding: 10,
+                    backgroundColor: '#4D4D4D',
+                    marginTop: 20,
+                  }}
+                >
+                  {!this.state.searchLoaded &&
+                    <div style={{ minHeight: 210 }}></div>}
+                  {!this.state.searchLoading &&
+                    this.state.searchLoaded &&
+                    this.state.searchResults.length > 0 &&
+                    this.state.searchResults.map((movie, index) => {
+                      return (
+                        <div style={{ margin: 10 }} onClick={() => {
+                          this.openModal(movie.id, "search",
+                            {
+                              title: movie.title,
+                              vote_average: movie.vote_average,
+                              poster: movie.poster_path,
+                              synopsis: movie.overview
+                            })
+                        }}>
+                          <Movie
+                            title={movie.title}
+                            voteAverage={movie.vote_average}
+                            posterPath={movie.poster_path}
+                          ></Movie>
+                          {this.state.searchResultsAdded[movie.id] &&
+                            <div style={{
+                              backgroundColor: "#D40000",
+                              position: "relative",
+                              top: -200,
+                              left: 10,
+                              padding: 5,
+                              fontSize: 10,
+                              textAlign: "center",
+                              width: "30%",
+                              borderRadius: 14,
+                              margin: 0,
+                              color: 'white',
+                              fontFamily: "Poppins"
+                            }}>
+                              Added ✓</div>}
+                        </div>
+                      )
+                    })}
                 </div>
-              )}
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  flexWrap: 'nowrap',
-                  overflowX: 'auto',
-                  padding: 10,
-                  backgroundColor: '#4D4D4D',
-                  marginTop: 20,
-                }}
-              >
-                {!this.state.searchLoaded &&
-                  <div style={{ minHeight: 210 }}></div>}
-                {!this.state.searchLoading &&
-                  this.state.searchLoaded &&
-                  this.state.searchResults.length > 0 &&
-                  this.state.searchResults.map((movie, index) => {
-                    return (
-                      <div style={{ margin: 10 }} onClick={() => {
-                        this.openModal(movie.id, "search",
-                          {
-                            title: movie.title,
-                            vote_average: movie.vote_average,
-                            poster: movie.poster_path,
-                            synopsis: movie.overview
-                          })
-                      }}>
-                        <Movie
-                          title={movie.title}
-                          voteAverage={movie.vote_average}
-                          posterPath={movie.poster_path}
-                        ></Movie>
-                        {this.state.searchResultsAdded[movie.id] &&
-                          <div style={{
-                            backgroundColor: "#D40000",
-                            position: "relative",
-                            top: -200,
-                            left: 10,
-                            padding: 5,
-                            fontSize: 10,
-                            textAlign: "center",
-                            width: "30%",
-                            borderRadius: 14,
-                            margin: 0,
-                            color: 'white',
-                            fontFamily: "Poppins"
-                          }}>
-                            Added ✓</div>}
-                      </div>
-                    )
-                  })}
-              </div>
-            </div>
+              </div>}
           </div>}
         <div style={{ width: "auto", height: 100, paddingTop: 40, color: "#D4D4D4", fontFamily: "Poppins", fontSize: 15, textAlign: "center" }}> Smovies Copyright 2021 ©</div>
       </div>
